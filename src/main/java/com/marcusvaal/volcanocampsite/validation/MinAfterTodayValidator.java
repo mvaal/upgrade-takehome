@@ -16,6 +16,6 @@ public class MinAfterTodayValidator implements ConstraintValidator<MinAfterToday
 
     @Override
     public boolean isValid(LocalDate date, ConstraintValidatorContext constraintValidatorContext) {
-        return !LocalDate.now().plusDays(days).isAfter(date);
+        return date == null || !LocalDate.now().plusDays(days).isAfter(date);
     }
 }

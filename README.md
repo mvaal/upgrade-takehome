@@ -34,3 +34,6 @@ jdbc:h2:mem:mydb
 upgrade
 password
 ```
+```sql
+select EMAIL, FULL_NAME, DATE, COST from CAMPER c, BOOKING b, RESERVATION r where c.ID = b.CAMPER_ID and b.ID = r.BOOKING_ID
+```

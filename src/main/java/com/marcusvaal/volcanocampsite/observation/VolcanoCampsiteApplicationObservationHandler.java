@@ -9,6 +9,10 @@ import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 
+/**
+ * Observation handler that will log when observations start and stop.
+ * This reduces boilerplate logging code.
+ */
 @Component
 class VolcanoCampsiteApplicationObservationHandler implements ObservationHandler<Observation.Context> {
 

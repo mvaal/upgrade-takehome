@@ -11,15 +11,16 @@ import org.springframework.validation.annotation.Validated;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Comparator;
 
 @Entity
-@Table(name = "reservations")
-@Data
+@Table
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Validated
-public class Reservation {
+public class Reservation implements Comparable<Reservation> {
     @Id
     @GeneratedValue
     private Long id;
@@ -30,7 +31,7 @@ public class Reservation {
     private Booking booking;
 
     @NotNull
-    @Column(unique=true)
+    @Column(unique = true)
     private LocalDate date;
 
     @NotNull
@@ -38,4 +39,19 @@ public class Reservation {
     @Max(value = 0, message = "The campsite should be free for all.")
     @Builder.Default
     private BigDecimal cost = BigDecimal.valueOf(0);
+
+    @Override
+    public String toString() {
+        return "Reservation{" +
+                "id=" + id +
+                ", booking=" + booking.getId() +
+                ", date=" + date +
+                ", cost=" + cost +
+                '}';
+    }
+
+    @Override
+    public int compareTo(Reservation o) {
+        return date.compareTo(o.getDate());
+    }
 }

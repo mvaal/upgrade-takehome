@@ -18,6 +18,6 @@ public class MaxAfterTodayValidator implements ConstraintValidator<MaxAfterToday
     @Override
     public boolean isValid(LocalDate date, ConstraintValidatorContext constraintValidatorContext) {
         // Since this is a less than instead of less than or equals, subtract a day
-        return LocalDate.now().plusDays(days).plusMonths(months).isAfter(date);
+        return date == null || LocalDate.now().plusDays(days).plusMonths(months).isAfter(date);
     }
 }

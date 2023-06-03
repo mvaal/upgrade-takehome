@@ -5,8 +5,14 @@ PUT http://localhost:8080/api/v1/bookings/book
 Content-Type: application/json
 
 {
-  "startDate": "06/09/2023",
-  "duration": 3
+  "camper": {
+    "email": "marcus@upgrade.com",
+    "fullName": "Marcus"
+  },
+  "dateRange": {
+    "startDate": "06/04/2023",
+    "endDate": "06/06/2023"
+  }
 }
 
 ###

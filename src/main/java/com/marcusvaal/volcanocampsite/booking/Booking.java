@@ -1,31 +1,44 @@
 package com.marcusvaal.volcanocampsite.booking;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.marcusvaal.volcanocampsite.reservation.Reservation;
+import com.marcusvaal.volcanocampsite.camper.Camper;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.springframework.validation.annotation.Validated;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
 
 @Entity
-@Table(name = "bookings")
-@Data
+@Table
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Validated
 public class Booking {
     @Id
     @GeneratedValue
     private Long id;
 
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "camper_id")
+    @JsonBackReference
+    private Camper camper;
+
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "booking")
     @JsonManagedReference
-    private List<Reservation> reservations;
+    @Builder.Default
+    private List<Reservation> reservations = Collections.emptyList();
+
+    @Override
+    public String toString() {
+        return "Booking{" +
+                "id=" + id +
+                ", camper=" + camper.getId() +
+                ", reservations=" + reservations +
+                '}';
+    }
 }

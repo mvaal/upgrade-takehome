@@ -8,6 +8,6 @@ import java.time.LocalDate;
 public class NotInThePastValidator implements ConstraintValidator<NotInThePast, LocalDate> {
     @Override
     public boolean isValid(LocalDate date, ConstraintValidatorContext constraintValidatorContext) {
-        return !LocalDate.now().isAfter(date);
+        return date == null || !LocalDate.now().isAfter(date);
     }
 }

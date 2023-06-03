@@ -1,10 +1,13 @@
 package com.marcusvaal.volcanocampsite.booking;
 
-import com.marcusvaal.volcanocampsite.model.DateDuration;
-import com.marcusvaal.volcanocampsite.reservation.Reservation;
-import com.marcusvaal.volcanocampsite.reservation.ReservationController;
-import com.marcusvaal.volcanocampsite.reservation.ReservationService;
+import com.marcusvaal.volcanocampsite.camper.Camper;
+import com.marcusvaal.volcanocampsite.camper.CamperMapper;
+import com.marcusvaal.volcanocampsite.camper.CamperRepository;
+import com.marcusvaal.volcanocampsite.dto.BookingRequest;
+import com.marcusvaal.volcanocampsite.dto.BookingResponse;
+import com.marcusvaal.volcanocampsite.dto.BookingResponseMapper;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,28 +15,38 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 @RestController
 @RequestMapping("/api/v1/bookings")
 @RequiredArgsConstructor
 public class BookingController {
     private final BookingService bookingService;
-    private final ReservationService reservationService;
+    private final BookingResponseMapper bookingResponseMapper;
+    private final BookingMapper bookingMapper;
 
-    private Logger logger = LoggerFactory.getLogger(BookingController.class);
+//    private Logger logger = LoggerFactory.getLogger(BookingController.class);
 
     @PutMapping("/book")
-    public Booking bookDuration(@Valid @RequestBody DateDuration dateDuration) {
-        return bookingService.bookDuration(dateDuration);
-    }
-
-    @GetMapping("/reservations/{id}")
-    public List<Reservation> reservationsByBookingId(@Valid @PathVariable("id") Long id) {
-        return reservationService.reservationsByBookingId(id);
+    public BookingResponse bookDuration(@Valid @RequestBody BookingDTO bookingDto) {
+        Booking booking = bookingMapper.toBooking(bookingDto);
+        Booking response = bookingService.bookDuration(booking);
+        return bookingResponseMapper.toDto(response);
     }
 
     @DeleteMapping("/cancel/{id}")
     public void cancelBookingById(@Valid @PathVariable("id") Long id) {
         bookingService.cancelBookingById(id);
+    }
+
+    @GetMapping("/{id}")
+    public Optional<BookingDTO> camperById(@PathVariable("id") @Valid @NotNull Long id) {
+        return bookingService.findById(id).map(bookingMapper::toDto);
+    }
+
+    @GetMapping
+    public Stream<BookingDTO> allBookings() {
+        List<Booking> bookings = bookingService.allBookings();
+        return bookingService.allBookings().stream().map(bookingMapper::toDto);
     }
 }

@@ -1,0 +1,10 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="VolcanoCampsiteApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+    <option name="ACTIVE_PROFILES" value="debug" />
+    <module name="volcano-campsite" />
+    <option name="SPRING_BOOT_MAIN_CLASS" value="com.marcusvaal.volcanocampsite.VolcanoCampsiteApplication" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
