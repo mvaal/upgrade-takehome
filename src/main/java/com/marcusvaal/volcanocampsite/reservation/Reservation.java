@@ -1,19 +1,16 @@
 package com.marcusvaal.volcanocampsite.reservation;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.marcusvaal.volcanocampsite.booking.Booking;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.validation.annotation.Validated;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "reservations")
@@ -29,6 +26,7 @@ public class Reservation {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "booking_id")
+    @JsonBackReference
     private Booking booking;
 
     @NotNull

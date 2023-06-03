@@ -27,6 +27,7 @@ date(s). Demonstrate with appropriate test cases that the system can gracefully 
 * There are no restrictions on how reservations are stored as long as system constraints are not violated.
 
 http://localhost:8080/swagger-ui.html
+http://localhost:8080/actuator/prometheus
 http://localhost:8080/h2-console
 ```
 jdbc:h2:mem:mydb
