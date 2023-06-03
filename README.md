@@ -24,6 +24,12 @@ modification/cancellation of an existing reservation
 date(s). Demonstrate with appropriate test cases that the system can gracefully handle concurrent requests to reserve the campsite.
 * Provide appropriate error messages to the caller to indicate the error cases.
 * In general, the system should be able to handle large volume of requests for getting the campsite availability
-* There are no restrictions on how reservations are stored as as long as system constraints are not violated.
+* There are no restrictions on how reservations are stored as long as system constraints are not violated.
 
 http://localhost:8080/swagger-ui.html
+http://localhost:8080/h2-console
+```
+jdbc:h2:mem:mydb
+upgrade
+password
+```
