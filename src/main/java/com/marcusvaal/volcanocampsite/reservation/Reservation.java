@@ -1,9 +1,7 @@
-package com.marcusvaal.volcanocampsite.web.model;
+package com.marcusvaal.volcanocampsite.reservation;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.marcusvaal.volcanocampsite.booking.Booking;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
@@ -14,6 +12,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -26,13 +25,15 @@ import java.time.LocalDateTime;
 public class Reservation {
     @Id
     @GeneratedValue
-    private Long bookingIdentifier;
+    private Long id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "booking_id")
+    private Booking booking;
 
     @NotNull
-    private LocalDateTime startDate;
-
-    @NotNull
-    private LocalDateTime endDate;
+    @Column(unique=true)
+    private LocalDate date;
 
     @NotNull
     @Min(value = 0, message = "The campsite should be free for all.")

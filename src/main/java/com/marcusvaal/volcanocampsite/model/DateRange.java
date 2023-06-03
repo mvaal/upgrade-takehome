@@ -1,4 +1,4 @@
-package com.marcusvaal.volcanocampsite.web.model;
+package com.marcusvaal.volcanocampsite.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.NotNull;
