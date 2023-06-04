@@ -1,5 +1,6 @@
 package com.marcusvaal.volcanocampsite.reservation;
 
+import com.marcusvaal.volcanocampsite.reservation.dto.ReservationDTO;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;

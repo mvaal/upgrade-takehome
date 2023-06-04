@@ -1,4 +1,4 @@
-package com.marcusvaal.volcanocampsite.camper;
+package com.marcusvaal.volcanocampsite.camper.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;

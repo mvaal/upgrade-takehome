@@ -1,4 +1,4 @@
-package com.marcusvaal.volcanocampsite.reservation;
+package com.marcusvaal.volcanocampsite.reservation.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;

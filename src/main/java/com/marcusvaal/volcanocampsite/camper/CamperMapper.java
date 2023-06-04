@@ -1,5 +1,6 @@
 package com.marcusvaal.volcanocampsite.camper;
 
+import com.marcusvaal.volcanocampsite.camper.dto.CamperDTO;
 import org.springframework.stereotype.Component;
 
 @Component

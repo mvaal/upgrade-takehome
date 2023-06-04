@@ -1,17 +1,20 @@
 GET http://localhost:8080/api/v1/reservations
 
 ###
+GET http://localhost:8080/api/v1/campers
+
+###
 PUT http://localhost:8080/api/v1/bookings/book
 Content-Type: application/json
 
 {
   "camper": {
-    "email": "marcus@upgrade.com",
+    "email": "marsafcus@upgrade.com",
     "fullName": "Marcus"
   },
   "dateRange": {
     "startDate": "06/04/2023",
-    "endDate": "06/06/2023"
+    "endDate": "06/05/2023"
   }
 }
 

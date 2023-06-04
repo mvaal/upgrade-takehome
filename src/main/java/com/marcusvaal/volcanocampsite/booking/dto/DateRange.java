@@ -1,9 +1,8 @@
-package com.marcusvaal.volcanocampsite.dto;
+package com.marcusvaal.volcanocampsite.booking.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.marcusvaal.volcanocampsite.reservation.Reservation;
 import com.marcusvaal.volcanocampsite.validation.MaxAfterToday;
 import com.marcusvaal.volcanocampsite.validation.MinAfterToday;
 import com.marcusvaal.volcanocampsite.validation.NotInThePast;
@@ -44,7 +43,6 @@ public class DateRange {
 
     public DateRange(@NotNull LocalDate startDate, @NotNull Long durationDays) {
         this.startDate = startDate;
-        this.endDate = startDate.plusDays(durationDays - 1);
         this.durationDays = durationDays;
     }
 
@@ -52,32 +50,37 @@ public class DateRange {
                      @NotNull LocalDate endDate) {
         this.startDate = startDate;
         this.endDate = endDate;
-        this.durationDays = ChronoUnit.DAYS.between(startDate, endDate);
     }
 
-    public void setDurationDays(Long durationDays) {
-        this.endDate = startDate.plusDays(durationDays - 1);
-        this.durationDays = durationDays;
+    public Long getDurationDays() {
+        return Optional.ofNullable(durationDays).orElseGet(() -> ChronoUnit.DAYS.between(this.startDate, this.endDate) + 1);
     }
 
-    public void setEndDate(LocalDate endDate) {
-        this.endDate = endDate;
-        this.durationDays = ChronoUnit.DAYS.between(this.startDate, this.endDate)+1;
+    public LocalDate getEndDate() {
+        return Optional.ofNullable(endDate).orElseGet(() -> startDate.plusDays(durationDays - 1));
     }
 
     @JsonIgnore
     public Stream<LocalDate> dateStream() {
-        return LongStream.range(0, this.durationDays)
+        return LongStream.range(0, this.getDurationDays())
                 .mapToObj(i -> this.startDate.plusDays(i));
     }
 
     @AssertTrue(message = "Only specify endDate or duration, but not both")
-    private boolean isOneOrOther() {
+    @JsonIgnore
+    public boolean isOneOrOther() {
         return (endDate != null && durationDays == null) || (endDate == null && durationDays != null);
     }
 
     @AssertTrue(message = "startDate must be the same or before endDate")
-    private boolean isStartDateBeforeEndDate() {
+    @JsonIgnore
+    public boolean isStartDateBeforeEndDate() {
         return endDate == null || !endDate.isBefore(startDate);
+    }
+
+    @AssertTrue(message = "The campsite can be reserved for max 3 days")
+    @JsonIgnore
+    public boolean isMaxThreeDays() {
+        return this.getDurationDays() >= 1 && this.getDurationDays() <= 3;
     }
 }

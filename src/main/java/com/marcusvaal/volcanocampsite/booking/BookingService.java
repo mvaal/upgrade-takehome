@@ -2,8 +2,6 @@ package com.marcusvaal.volcanocampsite.booking;
 
 import com.marcusvaal.volcanocampsite.camper.Camper;
 import com.marcusvaal.volcanocampsite.camper.CamperRepository;
-import com.marcusvaal.volcanocampsite.dto.DateRange;
-import com.marcusvaal.volcanocampsite.reservation.Reservation;
 import io.micrometer.observation.annotation.Observed;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
@@ -12,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 @RequiredArgsConstructor
 @Service
@@ -19,7 +18,7 @@ public class BookingService {
     private final BookingRepository bookingRepository;
     private final CamperRepository camperRepository;
 
-    @Observed(name = "booking.book.durationDays", contextualName = "BookingService.bookDuration")
+    @Observed(name = "booking.book.duration.days", contextualName = "BookingService.bookDuration")
     @Transactional
     public Booking bookDuration(Booking booking) {
         // Ideally this wouldn't create as part of the request, but instead
@@ -42,7 +41,7 @@ public class BookingService {
         return bookingRepository.findById(id);
     }
 
-    public List<Booking> allBookings() {
-        return bookingRepository.findAll();
+    public Stream<Booking> allBookings() {
+        return bookingRepository.findAll().stream();
     }
 }

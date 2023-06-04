@@ -1,5 +1,6 @@
 package com.marcusvaal.volcanocampsite.reservation;
 
+import com.marcusvaal.volcanocampsite.reservation.dto.ReservationDTO;
 import org.springframework.stereotype.Component;
 
 @Component

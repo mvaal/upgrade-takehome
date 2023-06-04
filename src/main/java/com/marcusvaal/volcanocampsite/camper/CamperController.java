@@ -1,13 +1,11 @@
 package com.marcusvaal.volcanocampsite.camper;
 
+import com.marcusvaal.volcanocampsite.camper.dto.CamperDTO;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -27,6 +25,6 @@ public class CamperController {
 
     @GetMapping
     public Stream<CamperDTO> allCampers() {
-        return camperService.allCampers().stream().map(camperMapper::toDto);
+        return camperService.allCampers().map(camperMapper::toDto);
     }
 }

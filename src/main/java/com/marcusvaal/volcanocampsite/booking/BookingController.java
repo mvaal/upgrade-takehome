@@ -1,16 +1,10 @@
 package com.marcusvaal.volcanocampsite.booking;
 
-import com.marcusvaal.volcanocampsite.camper.Camper;
-import com.marcusvaal.volcanocampsite.camper.CamperMapper;
-import com.marcusvaal.volcanocampsite.camper.CamperRepository;
-import com.marcusvaal.volcanocampsite.dto.BookingRequest;
-import com.marcusvaal.volcanocampsite.dto.BookingResponse;
-import com.marcusvaal.volcanocampsite.dto.BookingResponseMapper;
+import com.marcusvaal.volcanocampsite.booking.dto.BookingDTO;
+import com.marcusvaal.volcanocampsite.booking.dto.BookingRequest;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,16 +16,15 @@ import java.util.stream.Stream;
 @RequiredArgsConstructor
 public class BookingController {
     private final BookingService bookingService;
-    private final BookingResponseMapper bookingResponseMapper;
     private final BookingMapper bookingMapper;
 
 //    private Logger logger = LoggerFactory.getLogger(BookingController.class);
 
     @PutMapping("/book")
-    public BookingResponse bookDuration(@Valid @RequestBody BookingDTO bookingDto) {
-        Booking booking = bookingMapper.toBooking(bookingDto);
+    public BookingDTO bookDuration(@Valid @RequestBody BookingRequest bookingRequest) {
+        Booking booking = bookingMapper.toBooking(bookingRequest);
         Booking response = bookingService.bookDuration(booking);
-        return bookingResponseMapper.toDto(response);
+        return bookingMapper.toDto(response);
     }
 
     @DeleteMapping("/cancel/{id}")
@@ -46,7 +39,6 @@ public class BookingController {
 
     @GetMapping
     public Stream<BookingDTO> allBookings() {
-        List<Booking> bookings = bookingService.allBookings();
-        return bookingService.allBookings().stream().map(bookingMapper::toDto);
+        return bookingService.allBookings().map(bookingMapper::toDto);
     }
 }
