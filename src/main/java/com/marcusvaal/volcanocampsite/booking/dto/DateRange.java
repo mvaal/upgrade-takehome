@@ -10,6 +10,7 @@ import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -21,23 +22,18 @@ import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
 @Getter
-@Setter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class DateRange {
     @JsonFormat(pattern = "MM/dd/yyyy")
-    @NotInThePast(message = "The campsite can not be reserved in the past.")
-    @MinAfterToday(days = 1, message = "The campsite can be reserved minimum 1 day(s) ahead of arrival.")
-    @MaxAfterToday(days = 0, months = 1, message = "The campsite can be reserved up to 1 month in advance.")
+    @NotNull
+    @NotInThePast(message = "The startDate can not be in the past.")
+    @MinAfterToday(days = 1, message = "The startDate can be a minimum 1 day(s) ahead of arrival.")
+    @MaxAfterToday(days = 0, months = 1, message = "The startDate can be up to 1 month in advance.")
     private LocalDate startDate;
 
     @JsonFormat(pattern = "MM/dd/yyyy")
-    @NotInThePast(message = "The campsite can not be reserved in the past.")
-    @MinAfterToday(days = 1, message = "The campsite can be reserved minimum 1 day(s) ahead of arrival.")
-    @MaxAfterToday(days = 0, months = 1, message = "The campsite can be reserved up to 1 month in advance.")
     private LocalDate endDate;
 
-    @Min(value = 1, message = "The campsite can be reserved for min 1 day.")
-    @Max(value = 3, message = "The campsite can be reserved for max 3 days.")
     @JsonProperty(value = "duration")
     private Long durationDays;
 
@@ -53,7 +49,10 @@ public class DateRange {
     }
 
     public Long getDurationDays() {
-        return Optional.ofNullable(durationDays).orElseGet(() -> ChronoUnit.DAYS.between(this.startDate, this.endDate) + 1);
+        return Optional.ofNullable(durationDays)
+                .orElseGet(() -> Optional.ofNullable(this.endDate)
+                        .map(endDate -> ChronoUnit.DAYS.between(this.startDate, endDate) + 1)
+                        .orElse(0L));
     }
 
     public LocalDate getEndDate() {
@@ -66,7 +65,7 @@ public class DateRange {
                 .mapToObj(i -> this.startDate.plusDays(i));
     }
 
-    @AssertTrue(message = "Only specify endDate or duration, but not both")
+    @AssertTrue(message = "Only specify endDate or duration, but not both or neither")
     @JsonIgnore
     public boolean isOneOrOther() {
         return (endDate != null && durationDays == null) || (endDate == null && durationDays != null);
@@ -78,9 +77,9 @@ public class DateRange {
         return endDate == null || !endDate.isBefore(startDate);
     }
 
-    @AssertTrue(message = "The campsite can be reserved for max 3 days")
+    @AssertTrue(message = "The campsite can be reserved for min 1 day and max 3 days")
     @JsonIgnore
-    public boolean isMaxThreeDays() {
+    public boolean isCorrectDuration() {
         return this.getDurationDays() >= 1 && this.getDurationDays() <= 3;
     }
 }

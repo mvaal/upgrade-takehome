@@ -1,6 +1,7 @@
 package com.marcusvaal.volcanocampsite.reservation;
 
 import com.marcusvaal.volcanocampsite.reservation.dto.ReservationDTO;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,6 +14,7 @@ import java.util.stream.Stream;
 
 @RestController
 @RequestMapping("/api/v1/reservations")
+@Tag(name = "Reservations", description = "Reservation Dates")
 @RequiredArgsConstructor
 public class ReservationController {
 //    private Logger logger = LoggerFactory.getLogger(ReservationController.class);
