@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.marcusvaal</groupId>
-	<artifactId>volcano-campsite</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
-	<name>volcano-campsite</name>
+	<artifactId>volcano-booking-service</artifactId>
+	<version>1.0.0</version>
+	<name>volcano-booking-service</name>
 	<description>Upgrade - Back-end Tech Challenge</description>
 	<properties>
 		<java.version>20</java.version>
