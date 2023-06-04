@@ -1,3 +1,6 @@
 logging:
   level:
     com.marcusvaal: DEBUG
+spring:
+  jpa:
+    show-sql: true

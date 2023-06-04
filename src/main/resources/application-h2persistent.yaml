@@ -1,0 +1,7 @@
+spring:
+  datasource:
+    url: jdbc:h2:file:/data/volcanocampsite
+  jpa:
+    generate-ddl: true
+    hibernate:
+      ddl-auto: update
