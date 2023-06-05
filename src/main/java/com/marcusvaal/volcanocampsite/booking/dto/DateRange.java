@@ -49,14 +49,20 @@ public class DateRange {
     }
 
     public Long getDurationDays() {
+        Optional<Long> durationDaysOpt = Optional.ofNullable(durationDays);
+        if(durationDaysOpt.isEmpty() && endDate == null) {
+            throw new RuntimeException("duration and end date are null, validation should have caught this.");
+        }
         return Optional.ofNullable(durationDays)
-                .orElseGet(() -> Optional.ofNullable(this.endDate)
-                        .map(endDate -> ChronoUnit.DAYS.between(this.startDate, endDate) + 1)
-                        .orElse(0L));
+                .orElseGet(() -> ChronoUnit.DAYS.between(this.startDate, endDate) + 1);
     }
 
     public LocalDate getEndDate() {
-        return Optional.ofNullable(endDate).orElseGet(() -> startDate.plusDays(durationDays - 1));
+        Optional<LocalDate> endDateOpt = Optional.ofNullable(endDate);
+        if(endDateOpt.isEmpty() && durationDays == null) {
+            throw new RuntimeException("duration and end date are null, validation should have caught this.");
+        }
+        return endDateOpt.orElseGet(() -> startDate.plusDays(durationDays - 1));
     }
 
     @JsonIgnore
@@ -80,6 +86,9 @@ public class DateRange {
     @AssertTrue(message = "The campsite can be reserved for min 1 day and max 3 days")
     @JsonIgnore
     public boolean isCorrectDuration() {
+        if(endDate == null && durationDays == null) {
+            return false;
+        }
         return this.getDurationDays() >= 1 && this.getDurationDays() <= 3;
     }
 }
