@@ -31,7 +31,7 @@ public class Reservation implements Comparable<Reservation> {
     private Booking booking;
 
     @NotNull
-    @Column(unique = true)
+    @Column(name = "stay_date",unique = true)
     private LocalDate date;
 
     @NotNull
