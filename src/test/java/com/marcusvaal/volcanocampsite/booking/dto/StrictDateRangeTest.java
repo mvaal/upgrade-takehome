@@ -23,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @SpringBootTest
 @DisplayName("DateRange")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
-public class DateRangeTest {
+public class StrictDateRangeTest {
     @Autowired
     private Validator validator;
     @Autowired
@@ -32,10 +32,10 @@ public class DateRangeTest {
     @Test
     public void should_have_no_violations_for_valid_date_range() {
         LocalDate startDate = LocalDate.now().plusDays(1);
-        DateRange dateRange = new DateRange(startDate, startDate);
-        Set<ConstraintViolation<DateRange>> violations = validator.validate(dateRange);
+        StrictDateRange dateRange = new StrictDateRange(startDate, startDate);
+        Set<ConstraintViolation<StrictDateRange>> violations = validator.validate(dateRange);
         assertThat(violations, hasSize(0));
-        dateRange = new DateRange(LocalDate.now().plusDays(1), startDate.plusDays(2));
+        dateRange = new StrictDateRange(LocalDate.now().plusDays(1), startDate.plusDays(2));
         violations = validator.validate(dateRange);
         assertThat(violations, hasSize(0));
     }
@@ -43,47 +43,47 @@ public class DateRangeTest {
     @Test
     public void should_throw_invalidformatexception_for_invalid_start_date() {
         final String badDateRangeStr = "{\"startDate\":\"6/04/2023\",\"endDate\":\"06/04/2023\"}";
-        InvalidFormatException thrown = assertThrows(InvalidFormatException.class, () -> objectMapper.readValue(badDateRangeStr, DateRange.class));
+        InvalidFormatException thrown = assertThrows(InvalidFormatException.class, () -> objectMapper.readValue(badDateRangeStr, StrictDateRange.class));
         assertThat(thrown.getValue(), is("6/04/2023"));
         final String goodDateRangeStr = "{\"startDate\":\"06/04/2023\",\"endDate\":\"06/04/2023\"}";
-        assertDoesNotThrow(() -> objectMapper.readValue(goodDateRangeStr, DateRange.class));
+        assertDoesNotThrow(() -> objectMapper.readValue(goodDateRangeStr, StrictDateRange.class));
     }
 
     @Test
     public void should_have_violation_for_null_start_date() {
-        DateRange dateRange = new DateRange(null, null);
-        Set<ConstraintViolation<DateRange>> violations = validator.validate(dateRange);
+        StrictDateRange dateRange = new StrictDateRange(null, null);
+        Set<ConstraintViolation<StrictDateRange>> violations = validator.validate(dateRange);
         assertThat(violations, hasSize(4));
     }
 
     @Test
     public void should_have_violation_for_start_and_end_date_in_the_past() {
         LocalDate startDate = LocalDate.now().minusDays(1);
-        DateRange dateRange = new DateRange(startDate, startDate.plusDays(2));
-        Set<ConstraintViolation<DateRange>> violations = validator.validate(dateRange);
+        StrictDateRange dateRange = new StrictDateRange(startDate, startDate.plusDays(2));
+        Set<ConstraintViolation<StrictDateRange>> violations = validator.validate(dateRange);
         assertThat(violations, hasSize(2));
     }
 
     @Test
     public void should_have_violation_for_start_date_not_min_after() {
         LocalDate startDate = LocalDate.now();
-        DateRange dateRange = new DateRange(startDate, startDate.plusDays(2));
-        Set<ConstraintViolation<DateRange>> violations = validator.validate(dateRange);
+        StrictDateRange dateRange = new StrictDateRange(startDate, startDate.plusDays(2));
+        Set<ConstraintViolation<StrictDateRange>> violations = validator.validate(dateRange);
         assertThat(violations, hasSize(1));
     }
 
     @Test
     public void should_have_violation_for_start_date_not_max_after() {
         LocalDate startDate = LocalDate.now().plusMonths(1);
-        DateRange dateRange = new DateRange(startDate, startDate.plusDays(2));
-        Set<ConstraintViolation<DateRange>> violations = validator.validate(dateRange);
+        StrictDateRange dateRange = new StrictDateRange(startDate, startDate.plusDays(2));
+        Set<ConstraintViolation<StrictDateRange>> violations = validator.validate(dateRange);
         assertThat(violations, hasSize(2));
     }
 
     @Test
     public void should_throw_invalidformatexception_for_invalid_end_date() {
         String dateRangeStr = "{\"startDate\":\"06/04/2023\",\"endDate\":\"06/5/2023\"}";
-        InvalidFormatException thrown = assertThrows(InvalidFormatException.class, () -> objectMapper.readValue(dateRangeStr, DateRange.class));
+        InvalidFormatException thrown = assertThrows(InvalidFormatException.class, () -> objectMapper.readValue(dateRangeStr, StrictDateRange.class));
         assertThat(thrown.getValue(), is("06/5/2023"));
     }
 
@@ -91,21 +91,21 @@ public class DateRangeTest {
     @Test
     public void should_not_allow_end_date_before_start_date() {
         LocalDate startDate = LocalDate.now().plusDays(1);
-        DateRange dateRange = new DateRange(startDate, startDate.minusDays(1));
-        Set<ConstraintViolation<DateRange>> violations = validator.validate(dateRange);
+        StrictDateRange dateRange = new StrictDateRange(startDate, startDate.minusDays(1));
+        Set<ConstraintViolation<StrictDateRange>> violations = validator.validate(dateRange);
         assertThat(violations, hasSize(3));
     }
 
     @Test
     public void should_not_allow_duration_less_than_1_or_greater_than_3() {
         LocalDate startDate = LocalDate.now().plusDays(1);
-        DateRange dateRange = new DateRange(startDate, startDate.plusDays(3));
-        Set<ConstraintViolation<DateRange>> violations = validator.validate(dateRange);
+        StrictDateRange dateRange = new StrictDateRange(startDate, startDate.plusDays(3));
+        Set<ConstraintViolation<StrictDateRange>> violations = validator.validate(dateRange);
         assertThat(violations, hasSize(1));
-        dateRange = new DateRange(startDate, startDate.plusDays(1));
+        dateRange = new StrictDateRange(startDate, startDate.plusDays(1));
         violations = validator.validate(dateRange);
         assertThat(violations, hasSize(0));
-        dateRange = new DateRange(startDate, startDate.plusDays(2));
+        dateRange = new StrictDateRange(startDate, startDate.plusDays(2));
         violations = validator.validate(dateRange);
         assertThat(violations, hasSize(0));
     }
@@ -113,7 +113,7 @@ public class DateRangeTest {
     @Test
     public void should_return_the_correct_duration() {
         LocalDate startDate = LocalDate.now().plusDays(1);
-        DateRange dateRange = new DateRange(startDate, startDate.plusDays(2));
+        StrictDateRange dateRange = new StrictDateRange(startDate, startDate.plusDays(2));
         assertThat(dateRange.getDurationDays(), is(3L));
     }
 }

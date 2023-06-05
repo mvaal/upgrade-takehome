@@ -14,7 +14,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
-public record DateRange(
+public record StrictDateRange(
         @JsonFormat(pattern = "MM/dd/yyyy")
         @NotNull
         @NotInThePast(message = "The startDate can not be in the past.")

@@ -2,6 +2,7 @@ package com.marcusvaal.volcanocampsite.booking;
 
 import com.marcusvaal.volcanocampsite.booking.dto.BookingDTO;
 import com.marcusvaal.volcanocampsite.booking.dto.BookingRequest;
+import com.marcusvaal.volcanocampsite.booking.dto.OpenDateRange;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -28,7 +29,8 @@ public class BookingController {
     private final Logger logger = LoggerFactory.getLogger(BookingController.class);
 
     @PutMapping("/book")
-    public BookingDTO bookDuration(@Valid @RequestBody BookingRequest bookingRequest) {
+    public BookingDTO book(@Valid @RequestBody BookingRequest bookingRequest) {
+        logger.debug("Request - Booking with request: {}", bookingRequest);
         Booking booking = bookingMapper.toBooking(bookingRequest);
         Booking response = bookingService.bookDuration(booking);
         return bookingMapper.toDto(response);

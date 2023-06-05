@@ -33,7 +33,7 @@ public class BookingDTOTest {
     @Test
     public void should_trigger_field_violations() {
         CamperDTO camper = new CamperDTO(null, "Test Name");
-        DateRange dateRange = new DateRange(LocalDate.EPOCH, LocalDate.now().plusDays(1));
+        StrictDateRange dateRange = new StrictDateRange(LocalDate.EPOCH, LocalDate.now().plusDays(1));
         BookingDTO bookingDto = new BookingDTO(1L, camper, dateRange);
         Set<ConstraintViolation<BookingDTO>> violations = validator.validate(bookingDto);
         assertThat(violations, hasSize(4));

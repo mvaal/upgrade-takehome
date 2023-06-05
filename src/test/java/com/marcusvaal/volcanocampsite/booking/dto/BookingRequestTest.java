@@ -34,7 +34,7 @@ public class BookingRequestTest {
     @Test
     public void should_trigger_field_violations() {
         CamperDTO camper = new CamperDTO(null, "Test Name");
-        DateRange dateRange = new DateRange(LocalDate.EPOCH, LocalDate.now().plusDays(1));
+        StrictDateRange dateRange = new StrictDateRange(LocalDate.EPOCH, LocalDate.now().plusDays(1));
         BookingRequest bookingDto = new BookingRequest(camper, dateRange);
         Set<ConstraintViolation<BookingRequest>> violations = validator.validate(bookingDto);
         assertThat(violations, hasSize(4));

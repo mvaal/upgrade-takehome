@@ -1,6 +1,8 @@
 package com.marcusvaal.volcanocampsite.reservation;
 
+import com.marcusvaal.volcanocampsite.booking.Booking;
 import com.marcusvaal.volcanocampsite.booking.BookingService;
+import com.marcusvaal.volcanocampsite.booking.dto.OpenDateRange;
 import com.marcusvaal.volcanocampsite.reservation.dto.ReservationDTO;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -9,10 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.stream.Stream;
 
@@ -45,6 +44,13 @@ public class ReservationController {
         Stream<ReservationDTO> stream = reservationService.reservationsByBookingId(id)
                 .map(reservationMapper::toDto);
         return new ResponseEntity<>(stream, HttpStatus.OK);
+    }
+
+    @PostMapping("/available")
+    public Stream<ReservationDTO> availableReservations(@Valid @RequestBody OpenDateRange dateRange) {
+        logger.debug("Request - Reservation with date range: {}", dateRange);
+        return reservationService.availableReservations(dateRange)
+                .map(reservationMapper::toDto);
     }
 
     @GetMapping

@@ -47,7 +47,7 @@ public class ControllerExceptionHandler {
     public final ResponseEntity<ErrorResponse> dataIntegrityViolationException(DataIntegrityViolationException ex, WebRequest request) {
         if (ex.getCause() instanceof ConstraintViolationException) {
             if (ex.getCause().getMessage().contains("RESERVATION")) {
-                String errorMessage = String.format("Booking is attempting to be scheduled on an existing reserved date: {}.", ex.getCause().getCause().getMessage());
+                String errorMessage = "Booking is attempting to be scheduled on an existing reserved date";
                 return new ResponseEntity<>(new ErrorResponse(errorMessage), HttpStatus.BAD_REQUEST);
             }
         }

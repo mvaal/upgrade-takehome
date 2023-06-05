@@ -12,6 +12,6 @@ public record BookingDTO(
         CamperDTO camper,
         @NotNull(message = "Must provide date range")
         @Valid
-        DateRange dateRange
+        StrictDateRange dateRange
 ) {
 }

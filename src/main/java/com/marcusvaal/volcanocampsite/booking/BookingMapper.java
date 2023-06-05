@@ -2,7 +2,7 @@ package com.marcusvaal.volcanocampsite.booking;
 
 import com.marcusvaal.volcanocampsite.booking.dto.BookingDTO;
 import com.marcusvaal.volcanocampsite.booking.dto.BookingRequest;
-import com.marcusvaal.volcanocampsite.booking.dto.DateRange;
+import com.marcusvaal.volcanocampsite.booking.dto.StrictDateRange;
 import com.marcusvaal.volcanocampsite.camper.Camper;
 import com.marcusvaal.volcanocampsite.camper.dto.CamperDTO;
 import com.marcusvaal.volcanocampsite.camper.CamperMapper;
@@ -24,7 +24,7 @@ class BookingMapper {
         if (reservations.isEmpty()) {
             throw new RuntimeException("Unexpected empty reservation");
         }
-        return new BookingDTO(booking.getId(), camper, new DateRange(Collections.min(reservations).getDate(), Collections.max(reservations).getDate()));
+        return new BookingDTO(booking.getId(), camper, new StrictDateRange(Collections.min(reservations).getDate(), Collections.max(reservations).getDate()));
     }
 
     public Booking toBooking(BookingRequest bookingRequest) {
