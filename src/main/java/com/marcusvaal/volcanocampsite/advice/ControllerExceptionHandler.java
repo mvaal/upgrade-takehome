@@ -1,7 +1,10 @@
 package com.marcusvaal.volcanocampsite.advice;
 
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
+import com.marcusvaal.volcanocampsite.booking.BookingController;
 import org.hibernate.exception.ConstraintViolationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +21,8 @@ import java.util.List;
 
 @ControllerAdvice
 public class ControllerExceptionHandler {
+    private final Logger logger = LoggerFactory.getLogger(ControllerExceptionHandler.class);
+
     @ExceptionHandler(value = {MethodArgumentNotValidException.class})
     public ResponseEntity<ErrorResponse> methodArgumentNotValidException(MethodArgumentNotValidException ex, WebRequest request) {
         BindingResult result = ex.getBindingResult();
@@ -42,7 +47,7 @@ public class ControllerExceptionHandler {
     @ExceptionHandler(DataIntegrityViolationException.class)
     public final ResponseEntity<ErrorResponse> dataIntegrityViolationException(DataIntegrityViolationException ex, WebRequest request) {
         if (ex.getCause() instanceof ConstraintViolationException) {
-            if(ex.getCause().getMessage().contains("RESERVATION")) {
+            if (ex.getCause().getMessage().contains("RESERVATION")) {
                 String errorMessage = String.format("Booking is attempting to be scheduled on an existing reserved date.", ex.getCause().getCause().getMessage());
                 return new ResponseEntity<>(new ErrorResponse(errorMessage), HttpStatus.BAD_REQUEST);
             }
@@ -58,6 +63,7 @@ public class ControllerExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public final ResponseEntity<ErrorResponse> handleAllExceptions(Exception ex, WebRequest request) {
+        logger.error("Unhandled Error Exception: {}", request, ex);
         String errorMessage = "Unknown Exception, please contact support.";
         return new ResponseEntity<>(new ErrorResponse(errorMessage), HttpStatus.INTERNAL_SERVER_ERROR);
     }

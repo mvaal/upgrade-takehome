@@ -1,5 +1,9 @@
 package com.marcusvaal.volcanocampsite.booking;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.marcusvaal.volcanocampsite.booking.dto.BookingRequest;
+import com.marcusvaal.volcanocampsite.booking.dto.DateRange;
+import com.marcusvaal.volcanocampsite.camper.dto.CamperDTO;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
@@ -11,10 +15,13 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlGroup;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.time.LocalDate;
+
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.BEFORE_TEST_METHOD;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -34,7 +41,31 @@ public class BookingControllerTest {
     private BookingRepository repository;
 
     @Autowired
+    private ObjectMapper objectMapper;
+
+    @Autowired
     private MockMvc mockMvc;
+
+    @Test
+    void should_book_valid_request() throws Exception {
+        LocalDate startDate = LocalDate.now().plusDays(1);
+        CamperDTO camper = new CamperDTO("foo@upgrade.com", "Foo");
+        DateRange dateRange = new DateRange(startDate, startDate.plusDays(2));
+        BookingRequest bookingRequest = new BookingRequest(camper, dateRange);
+        String bookingToCreate = objectMapper.writeValueAsString(bookingRequest);
+        this.mockMvc.perform(put("/api/v1/bookings/book")
+                        .contentType(APPLICATION_JSON)
+                        .content(bookingToCreate))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").isMap())
+                .andExpect(jsonPath("$.bookingId", equalTo(1)))
+                .andExpect(jsonPath("$.camper.email", equalTo("marcus@upgrade.com")))
+                .andExpect(jsonPath("$.camper.fullName", equalTo("Marcus")))
+                .andExpect(jsonPath("$.dateRange.startDate", equalTo("06/04/2023")))
+                .andExpect(jsonPath("$.dateRange.endDate", equalTo("06/06/2023")))
+                .andExpect(jsonPath("$.dateRange.duration", equalTo(3)));
+    }
 
     @Test
     void should_return_by_id_if_it_exists() throws Exception {
@@ -45,9 +76,9 @@ public class BookingControllerTest {
                 .andExpect(jsonPath("$.bookingId", equalTo(1)))
                 .andExpect(jsonPath("$.camper.email", equalTo("marcus@upgrade.com")))
                 .andExpect(jsonPath("$.camper.fullName", equalTo("Marcus")))
-                .andExpect(jsonPath("$.dateRange.startDate", equalTo("06/04/2023")))
-                .andExpect(jsonPath("$.dateRange.endDate", equalTo("06/06/2023")))
-                .andExpect(jsonPath("$.dateRange.duration", equalTo(3)));
+                .andExpect(jsonPath("$.dateRange.startDate", equalTo("06/01/2023")))
+                .andExpect(jsonPath("$.dateRange.endDate", equalTo("06/03/2023")))
+                .andExpect(jsonPath("$.dateRange.durationDays", equalTo(3)));
     }
 
     @Test

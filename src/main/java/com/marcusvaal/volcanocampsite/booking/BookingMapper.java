@@ -24,7 +24,7 @@ class BookingMapper {
         if (reservations.isEmpty()) {
             throw new RuntimeException("Unexpected empty reservation");
         }
-        return new BookingDTO(booking.getId(), camper, new DateRange(Collections.min(reservations).getDate(), (long) reservations.size()));
+        return new BookingDTO(booking.getId(), camper, new DateRange(Collections.min(reservations).getDate(), Collections.max(reservations).getDate()));
     }
 
     public Booking toBooking(BookingRequest bookingRequest) {

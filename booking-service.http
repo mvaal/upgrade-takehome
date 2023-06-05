@@ -1,7 +1,7 @@
 GET http://localhost:8080/api/v1/reservations
 
 ###
-GET http://localhost:8080/api/v1/campers/0
+GET http://localhost:8080/api/v1/campers/1
 
 ###
 PUT http://localhost:8080/api/v1/bookings/book
@@ -17,9 +17,6 @@ Content-Type: application/json
     "endDate": "06/07/2023"
   }
 }
-
-###
-GET http://localhost:8080/api/v1/bookings/reservations/1
 
 ###
 GET http://localhost:8080/api/v1/reservations/1

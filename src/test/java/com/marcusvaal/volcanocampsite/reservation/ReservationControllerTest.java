@@ -39,7 +39,7 @@ public class ReservationControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isMap())
-                .andExpect(jsonPath("$.date", equalTo("2023-06-04")))
+                .andExpect(jsonPath("$.date", equalTo("2023-06-01")))
                 .andExpect(jsonPath("$.cost", equalTo(0d)));
     }
 
