@@ -28,7 +28,7 @@ public class BookingController {
 
     private final Logger logger = LoggerFactory.getLogger(BookingController.class);
 
-    @PostMapping("/book")
+    @PostMapping("/booking")
     public BookingDTO book(@Valid @RequestBody BookingRequest bookingRequest) {
         logger.debug("Request - Booking with request: {}", bookingRequest);
         Booking booking = bookingMapper.toBooking(bookingRequest);
@@ -36,7 +36,7 @@ public class BookingController {
         return bookingMapper.toDto(response);
     }
 
-    @PutMapping("/book/{id}")
+    @PutMapping("/booking/{id}")
     public ResponseEntity<BookingDTO> updateDuration(@NotNull @PathVariable("id") Long id, @RequestBody @Valid StrictDateRange dateRange) {
         logger.debug("Request - Update Booking ID {} with date range: {}", id, dateRange);
         return bookingService.updateDuration(id, dateRange)
@@ -45,7 +45,7 @@ public class BookingController {
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    @DeleteMapping("/cancel/{id}")
+    @DeleteMapping("/booking/{id}")
     public ResponseEntity<Object> cancelBookingById(@Valid @PathVariable("id") Long id) {
         logger.debug("Request - Delete Booking: {}", id);
         if (!bookingService.existsById(id)) {
@@ -55,7 +55,7 @@ public class BookingController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/booking/{id}")
     @Operation(summary = "Booking By ID")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "successfully retrieved"),

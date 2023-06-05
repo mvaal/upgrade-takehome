@@ -45,7 +45,7 @@ public class ReservationControllerTest {
 
     @Test
     void should_return_by_id_if_it_exists() throws Exception {
-        this.mockMvc.perform(get("/api/v1/reservations/-1"))
+        this.mockMvc.perform(get("/api/v1/reservations/reservation/-1"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isMap())
@@ -55,7 +55,7 @@ public class ReservationControllerTest {
 
     @Test
     void should_return_not_found_if_it_does_not_exists() throws Exception {
-        this.mockMvc.perform(get("/api/v1/reservations/0"))
+        this.mockMvc.perform(get("/api/v1/reservations/reservation/0"))
                 .andDo(print())
                 .andExpect(status().isNotFound());
     }

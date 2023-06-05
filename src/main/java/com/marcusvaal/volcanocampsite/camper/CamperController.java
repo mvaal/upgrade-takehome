@@ -26,7 +26,7 @@ public class CamperController {
     private final CamperService camperService;
     private final CamperMapper camperMapper;
 
-    @GetMapping("/{id}")
+    @GetMapping("/camper/{id}")
     public ResponseEntity<CamperDTO> camperById(@PathVariable("id") @Valid @NotNull Long id) {
         logger.debug("Request - Camper with ID: {}", id);
         return camperService.findById(id)

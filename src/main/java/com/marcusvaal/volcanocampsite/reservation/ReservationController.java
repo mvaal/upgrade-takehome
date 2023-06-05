@@ -26,7 +26,7 @@ public class ReservationController {
     private final BookingService bookingService;
     private final ReservationMapper reservationMapper;
 
-    @GetMapping("/{id}")
+    @GetMapping("/reservation/{id}")
     public ResponseEntity<ReservationDTO> reservationById(@Valid @PathVariable("id") Long id) {
         logger.debug("Request - Reservation with ID: {}", id);
         return reservationService.reservationById(id)

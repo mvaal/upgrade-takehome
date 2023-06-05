@@ -25,8 +25,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.BEFORE_TEST_METHOD;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -71,7 +70,7 @@ public class BookingControllerTest {
         assertThat(this.bookingRepository.findAll(), hasSize(1));
         assertThat(this.reservationRepository.findAll(), hasSize(3));
 
-        this.mockMvc.perform(post("/api/v1/bookings/book")
+        this.mockMvc.perform(post("/api/v1/bookings/booking")
                         .contentType(APPLICATION_JSON)
                         .content(bookingToCreate))
                 .andDo(print())
@@ -103,7 +102,7 @@ public class BookingControllerTest {
         assertThat(this.bookingRepository.findAll(), hasSize(1));
         assertThat(this.reservationRepository.findAll(), hasSize(3));
 
-        this.mockMvc.perform(post("/api/v1/bookings/book")
+        this.mockMvc.perform(post("/api/v1/bookings/booking")
                         .contentType(APPLICATION_JSON)
                         .content(bookingToCreate))
                 .andDo(print())
@@ -140,7 +139,7 @@ public class BookingControllerTest {
         assertThat(this.bookingRepository.findAll(), hasSize(1));
         assertThat(this.reservationRepository.findAll(), hasSize(3));
 
-        this.mockMvc.perform(post("/api/v1/bookings/book")
+        this.mockMvc.perform(post("/api/v1/bookings/booking")
                         .contentType(APPLICATION_JSON)
                         .content(bookingToCreateOne))
                 .andDo(print())
@@ -157,7 +156,7 @@ public class BookingControllerTest {
         assertThat(this.bookingRepository.findAll(), hasSize(2));
         assertThat(this.reservationRepository.findAll(), hasSize(6));
 
-        this.mockMvc.perform(post("/api/v1/bookings/book")
+        this.mockMvc.perform(post("/api/v1/bookings/booking")
                         .contentType(APPLICATION_JSON)
                         .content(bookingToCreateTwo))
                 .andDo(print())
@@ -171,8 +170,53 @@ public class BookingControllerTest {
     }
 
     @Test
+    void should_update_booking_with_valid_date_range() throws Exception {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
+        LocalDate startDate = LocalDate.now().plusDays(1);
+        long duration = 2;
+        StrictDateRange dateRange = new StrictDateRange(startDate, startDate.plusDays(duration-1));
+        String dateRangeToCreate = objectMapper.writeValueAsString(dateRange);
+
+        assertThat(this.camperRepository.findAll(), hasSize(1));
+        assertThat(this.bookingRepository.findAll(), hasSize(1));
+        assertThat(this.reservationRepository.findAll(), hasSize(3));
+
+        this.mockMvc.perform(put("/api/v1/bookings/booking/-1")
+                        .contentType(APPLICATION_JSON)
+                        .content(dateRangeToCreate))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").isMap())
+                .andExpect(jsonPath("$.bookingId", equalTo(-1)))
+                .andExpect(jsonPath("$.camper.email", equalTo("marcus@upgrade.com")))
+                .andExpect(jsonPath("$.camper.fullName", equalTo("Marcus")))
+                .andExpect(jsonPath("$.dateRange.startDate", equalTo(formatter.format(startDate))))
+                .andExpect(jsonPath("$.dateRange.endDate", equalTo(formatter.format(dateRange.endDate()))))
+                .andExpect(jsonPath("$.dateRange.durationDays", equalTo((int)duration)));
+
+        assertThat(this.camperRepository.findAll(), hasSize(1));
+        assertThat(this.bookingRepository.findAll(), hasSize(1));
+        assertThat(this.reservationRepository.findAll(), hasSize(2));
+    }
+
+    @Test
+    void should_delete_booking_with_valid_id() throws Exception {
+        assertThat(this.camperRepository.findAll(), hasSize(1));
+        assertThat(this.bookingRepository.findAll(), hasSize(1));
+        assertThat(this.reservationRepository.findAll(), hasSize(3));
+
+        this.mockMvc.perform(delete("/api/v1/bookings/booking/-1"))
+                .andDo(print())
+                .andExpect(status().isOk());
+
+        assertThat(this.camperRepository.findAll(), hasSize(0));
+        assertThat(this.bookingRepository.findAll(), hasSize(0));
+        assertThat(this.reservationRepository.findAll(), hasSize(0));
+    }
+
+    @Test
     void should_return_by_id_if_it_exists() throws Exception {
-        this.mockMvc.perform(get("/api/v1/bookings/-1"))
+        this.mockMvc.perform(get("/api/v1/bookings/booking/-1"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isMap())
@@ -186,7 +230,7 @@ public class BookingControllerTest {
 
     @Test
     void should_return_not_found_if_it_does_not_exists() throws Exception {
-        this.mockMvc.perform(get("/api/v1/bookings/0"))
+        this.mockMvc.perform(get("/api/v1/bookings/booking/0"))
                 .andDo(print())
                 .andExpect(status().isNotFound());
     }

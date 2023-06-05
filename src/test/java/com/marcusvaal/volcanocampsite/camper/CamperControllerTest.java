@@ -33,7 +33,7 @@ public class CamperControllerTest {
 
     @Test
     void should_return_by_id_if_it_exists() throws Exception {
-        this.mockMvc.perform(get("/api/v1/campers/-1"))
+        this.mockMvc.perform(get("/api/v1/campers/camper/-1"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isMap())
@@ -43,7 +43,7 @@ public class CamperControllerTest {
 
     @Test
     void should_return_not_found_if_it_does_not_exists() throws Exception {
-        this.mockMvc.perform(get("/api/v1/campers/0"))
+        this.mockMvc.perform(get("/api/v1/campers/camper/0"))
                 .andDo(print())
                 .andExpect(status().isNotFound());
     }
