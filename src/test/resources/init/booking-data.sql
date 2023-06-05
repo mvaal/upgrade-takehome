@@ -1,1 +1,1 @@
-INSERT INTO BOOKING (id, camper_id) VALUES (1, 1);
+INSERT INTO BOOKING (id, camper_id) VALUES (-1, -1);

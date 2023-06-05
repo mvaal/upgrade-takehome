@@ -1,6 +1,5 @@
 package com.marcusvaal.volcanocampsite.booking.dto;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import jakarta.validation.ConstraintViolation;
@@ -13,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.Set;
 
 import static org.hamcrest.MatcherAssert.assertThat;

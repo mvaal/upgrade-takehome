@@ -16,12 +16,15 @@ import org.springframework.test.context.jdbc.SqlGroup;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.BEFORE_TEST_METHOD;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -48,11 +51,15 @@ public class BookingControllerTest {
 
     @Test
     void should_book_valid_request() throws Exception {
+        long duration = 3;
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
         LocalDate startDate = LocalDate.now().plusDays(1);
         CamperDTO camper = new CamperDTO("foo@upgrade.com", "Foo");
-        DateRange dateRange = new DateRange(startDate, startDate.plusDays(2));
+        DateRange dateRange = new DateRange(startDate, startDate.plusDays(duration-1));
         BookingRequest bookingRequest = new BookingRequest(camper, dateRange);
         String bookingToCreate = objectMapper.writeValueAsString(bookingRequest);
+        assertThat(this.repository.findAll(), hasSize(1));
+
         this.mockMvc.perform(put("/api/v1/bookings/book")
                         .contentType(APPLICATION_JSON)
                         .content(bookingToCreate))
@@ -60,11 +67,13 @@ public class BookingControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isMap())
                 .andExpect(jsonPath("$.bookingId", equalTo(1)))
-                .andExpect(jsonPath("$.camper.email", equalTo("marcus@upgrade.com")))
-                .andExpect(jsonPath("$.camper.fullName", equalTo("Marcus")))
-                .andExpect(jsonPath("$.dateRange.startDate", equalTo("06/04/2023")))
-                .andExpect(jsonPath("$.dateRange.endDate", equalTo("06/06/2023")))
-                .andExpect(jsonPath("$.dateRange.duration", equalTo(3)));
+                .andExpect(jsonPath("$.camper.email", equalTo("foo@upgrade.com")))
+                .andExpect(jsonPath("$.camper.fullName", equalTo("Foo")))
+                .andExpect(jsonPath("$.dateRange.startDate", equalTo(formatter.format(startDate))))
+                .andExpect(jsonPath("$.dateRange.endDate", equalTo(formatter.format(dateRange.endDate()))))
+                .andExpect(jsonPath("$.dateRange.durationDays", equalTo((int)duration)));
+
+        assertThat(this.repository.findAll(), hasSize(2));
     }
 
     @Test

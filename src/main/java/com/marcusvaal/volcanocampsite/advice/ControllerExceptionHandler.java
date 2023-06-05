@@ -40,20 +40,18 @@ public class ControllerExceptionHandler {
                 return new ResponseEntity<>(new ErrorResponse(errorMessage), HttpStatus.BAD_REQUEST);
             }
         }
-        String errorMessage = "Unknown Exception, please contact support.";
-        return new ResponseEntity<>(new ErrorResponse(errorMessage), HttpStatus.INTERNAL_SERVER_ERROR);
+        return handleAllExceptions(ex, request);
     }
 
     @ExceptionHandler(DataIntegrityViolationException.class)
     public final ResponseEntity<ErrorResponse> dataIntegrityViolationException(DataIntegrityViolationException ex, WebRequest request) {
         if (ex.getCause() instanceof ConstraintViolationException) {
             if (ex.getCause().getMessage().contains("RESERVATION")) {
-                String errorMessage = String.format("Booking is attempting to be scheduled on an existing reserved date.", ex.getCause().getCause().getMessage());
+                String errorMessage = String.format("Booking is attempting to be scheduled on an existing reserved date: {}.", ex.getCause().getCause().getMessage());
                 return new ResponseEntity<>(new ErrorResponse(errorMessage), HttpStatus.BAD_REQUEST);
             }
         }
-        String errorMessage = "Unknown Exception, please contact support.";
-        return new ResponseEntity<>(new ErrorResponse(errorMessage), HttpStatus.INTERNAL_SERVER_ERROR);
+        return handleAllExceptions(ex, request);
     }
 
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
