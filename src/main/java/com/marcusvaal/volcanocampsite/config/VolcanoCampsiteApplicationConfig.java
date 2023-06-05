@@ -1,4 +1,4 @@
-package com.marcusvaal.volcanocampsite;
+package com.marcusvaal.volcanocampsite.config;
 
 import io.micrometer.observation.ObservationRegistry;
 import io.micrometer.observation.aop.ObservedAspect;
@@ -8,7 +8,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-//@EnableTransactionManagement
 @OpenAPIDefinition(info=@Info(title="Volcano Campsite"))
 public class VolcanoCampsiteApplicationConfig {
     @Bean
