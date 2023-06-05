@@ -1,5 +1,5 @@
 ###
-PUT http://localhost:8080/api/v1/bookings/book
+POST http://localhost:8080/api/v1/bookings/book
 Content-Type: application/json
 
 {
@@ -18,6 +18,15 @@ GET http://localhost:8080/api/v1/bookings
 
 ###
 GET http://localhost:8080/api/v1/bookings/1
+
+###
+PUT http://localhost:8080/api/v1/bookings/book/1
+Content-Type: application/json
+
+{
+    "startDate": "06/07/2023",
+    "endDate": "06/08/2023"
+}
 
 ###
 DELETE http://localhost:8080/api/v1/bookings/cancel/1

@@ -1,7 +1,10 @@
 package com.marcusvaal.volcanocampsite.booking;
 
+import com.marcusvaal.volcanocampsite.booking.dto.StrictDateRange;
 import com.marcusvaal.volcanocampsite.camper.Camper;
 import com.marcusvaal.volcanocampsite.camper.CamperRepository;
+import com.marcusvaal.volcanocampsite.reservation.Reservation;
+import com.marcusvaal.volcanocampsite.reservation.ReservationRepository;
 import io.micrometer.observation.annotation.Observed;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
@@ -10,13 +13,17 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @RequiredArgsConstructor
 @Service
 public class BookingService {
-    private final BookingRepository bookingRepository;
     private final CamperRepository camperRepository;
+    private final BookingRepository bookingRepository;
+    private final ReservationRepository reservationRepository;
+
 
     @Observed(name = "booking.book.duration.days", contextualName = "BookingService.bookDuration")
     @Transactional
@@ -47,5 +54,23 @@ public class BookingService {
 
     public Stream<Booking> allBookings() {
         return bookingRepository.findAll().stream();
+    }
+
+    @Transactional
+    public Optional<Booking> updateDuration(Long id, final StrictDateRange dateRange) {
+        return bookingRepository.findById(id)
+                .map(booking -> {
+                    List<Reservation> reservations = dateRange.dateStream()
+                            .map(date -> Reservation.builder().date(date).booking(booking).build())
+                            .toList();
+                    booking.getReservations().retainAll(reservations);
+                    Set<Reservation> newReservations = reservations.stream()
+                            .filter(reservation -> !booking.getReservations()
+                                    .contains(reservation))
+                            .collect(Collectors.toSet());
+                    booking.getReservations().addAll(newReservations);
+                    return booking;
+                })
+                .map(bookingRepository::save);
     }
 }

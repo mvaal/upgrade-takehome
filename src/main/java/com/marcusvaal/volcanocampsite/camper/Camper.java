@@ -11,6 +11,7 @@ import org.springframework.validation.annotation.Validated;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table
@@ -32,7 +33,7 @@ public class Camper {
     @NotNull
     private String fullName;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "camper")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "camper")
     @JsonManagedReference
     @Builder.Default
     private List<Booking> bookings = new ArrayList<>();
@@ -45,5 +46,18 @@ public class Camper {
                 ", fullName='" + fullName + '\'' +
                 ", bookings=" + bookings +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Camper camper = (Camper) o;
+        return Objects.equals(email, camper.email);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(email);
     }
 }

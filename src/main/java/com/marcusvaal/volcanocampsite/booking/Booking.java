@@ -10,6 +10,8 @@ import org.springframework.validation.annotation.Validated;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table
@@ -23,15 +25,15 @@ public class Booking {
     @GeneratedValue
     private Long id;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "camper_id")
     @JsonBackReference
     private Camper camper;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "booking")
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "booking", orphanRemoval = true)
     @JsonManagedReference
     @Builder.Default
-    private List<Reservation> reservations = Collections.emptyList();
+    private Set<Reservation> reservations = Collections.emptySet();
 
     @Override
     public String toString() {
@@ -40,5 +42,18 @@ public class Booking {
                 ", camper=" + camper.getId() +
                 ", reservations=" + reservations +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Booking booking = (Booking) o;
+        return Objects.equals(camper, booking.camper) && Objects.equals(reservations, booking.reservations);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(camper, reservations);
     }
 }

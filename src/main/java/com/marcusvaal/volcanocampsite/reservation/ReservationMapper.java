@@ -9,7 +9,7 @@ public class ReservationMapper {
         return new ReservationDTO(reservation.getDate(), reservation.getCost());
     }
 
-    public Reservation toCamper(ReservationDTO reservationDto) {
+    public Reservation toReservation(ReservationDTO reservationDto) {
         return Reservation.builder().date(reservationDto.date()).cost(reservationDto.cost()).build();
     }
 }

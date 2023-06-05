@@ -2,7 +2,7 @@ package com.marcusvaal.volcanocampsite.booking;
 
 import com.marcusvaal.volcanocampsite.booking.dto.BookingDTO;
 import com.marcusvaal.volcanocampsite.booking.dto.BookingRequest;
-import com.marcusvaal.volcanocampsite.booking.dto.OpenDateRange;
+import com.marcusvaal.volcanocampsite.booking.dto.StrictDateRange;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -28,12 +28,21 @@ public class BookingController {
 
     private final Logger logger = LoggerFactory.getLogger(BookingController.class);
 
-    @PutMapping("/book")
+    @PostMapping("/book")
     public BookingDTO book(@Valid @RequestBody BookingRequest bookingRequest) {
         logger.debug("Request - Booking with request: {}", bookingRequest);
         Booking booking = bookingMapper.toBooking(bookingRequest);
         Booking response = bookingService.bookDuration(booking);
         return bookingMapper.toDto(response);
+    }
+
+    @PutMapping("/book/{id}")
+    public ResponseEntity<BookingDTO> updateDuration(@NotNull @PathVariable("id") Long id, @RequestBody @Valid StrictDateRange dateRange) {
+        logger.debug("Request - Update Booking ID {} with date range: {}", id, dateRange);
+        return bookingService.updateDuration(id, dateRange)
+                .map(bookingMapper::toDto)
+                .map(booking -> new ResponseEntity<>(booking, HttpStatus.OK))
+                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     @DeleteMapping("/cancel/{id}")

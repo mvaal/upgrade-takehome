@@ -12,6 +12,8 @@ import org.springframework.stereotype.Component;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Component
 @AllArgsConstructor
@@ -20,7 +22,7 @@ class BookingMapper {
 
     public BookingDTO toDto(Booking booking) {
         CamperDTO camper = camperMapper.toDto(booking.getCamper());
-        List<Reservation> reservations = booking.getReservations();
+        Set<Reservation> reservations = booking.getReservations();
         if (reservations.isEmpty()) {
             throw new RuntimeException("Unexpected empty reservation");
         }
@@ -31,9 +33,9 @@ class BookingMapper {
         Camper camper = camperMapper.toCamper(bookingRequest.camper());
         Booking booking = Booking.builder().camper(camper).build();
         camper.getBookings().add(booking);
-        List<Reservation> reservations = bookingRequest.dateRange().dateStream()
+        Set<Reservation> reservations = bookingRequest.dateRange().dateStream()
                 .map(date -> Reservation.builder().date(date).booking(booking).build())
-                .toList();
+                .collect(Collectors.toSet());
         booking.setReservations(reservations);
         return booking;
     }

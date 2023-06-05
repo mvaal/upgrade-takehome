@@ -26,7 +26,7 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.BEFORE_TEST_METHOD;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -71,7 +71,7 @@ public class BookingControllerTest {
         assertThat(this.bookingRepository.findAll(), hasSize(1));
         assertThat(this.reservationRepository.findAll(), hasSize(3));
 
-        this.mockMvc.perform(put("/api/v1/bookings/book")
+        this.mockMvc.perform(post("/api/v1/bookings/book")
                         .contentType(APPLICATION_JSON)
                         .content(bookingToCreate))
                 .andDo(print())
@@ -103,7 +103,7 @@ public class BookingControllerTest {
         assertThat(this.bookingRepository.findAll(), hasSize(1));
         assertThat(this.reservationRepository.findAll(), hasSize(3));
 
-        this.mockMvc.perform(put("/api/v1/bookings/book")
+        this.mockMvc.perform(post("/api/v1/bookings/book")
                         .contentType(APPLICATION_JSON)
                         .content(bookingToCreate))
                 .andDo(print())
@@ -140,7 +140,7 @@ public class BookingControllerTest {
         assertThat(this.bookingRepository.findAll(), hasSize(1));
         assertThat(this.reservationRepository.findAll(), hasSize(3));
 
-        this.mockMvc.perform(put("/api/v1/bookings/book")
+        this.mockMvc.perform(post("/api/v1/bookings/book")
                         .contentType(APPLICATION_JSON)
                         .content(bookingToCreateOne))
                 .andDo(print())
@@ -157,7 +157,7 @@ public class BookingControllerTest {
         assertThat(this.bookingRepository.findAll(), hasSize(2));
         assertThat(this.reservationRepository.findAll(), hasSize(6));
 
-        this.mockMvc.perform(put("/api/v1/bookings/book")
+        this.mockMvc.perform(post("/api/v1/bookings/book")
                         .contentType(APPLICATION_JSON)
                         .content(bookingToCreateTwo))
                 .andDo(print())
