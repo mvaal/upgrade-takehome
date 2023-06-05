@@ -21,7 +21,7 @@ import java.util.stream.Stream;
 @Tag(name = "Campers", description = "Camper Info")
 @RequiredArgsConstructor
 public class CamperController {
-    private Logger logger = LoggerFactory.getLogger(CamperController.class);
+    private final Logger logger = LoggerFactory.getLogger(CamperController.class);
 
     private final CamperService camperService;
     private final CamperMapper camperMapper;

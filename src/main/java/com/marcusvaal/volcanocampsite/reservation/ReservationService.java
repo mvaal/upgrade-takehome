@@ -1,5 +1,6 @@
 package com.marcusvaal.volcanocampsite.reservation;
 
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,6 +22,7 @@ public class ReservationService {
         return reservationRepository.findAll().stream();
     }
 
+    @Transactional
     public Stream<Reservation> reservationsByBookingId(Long bookingId) {
         return reservationRepository.findAllByBooking_Id(bookingId);
     }

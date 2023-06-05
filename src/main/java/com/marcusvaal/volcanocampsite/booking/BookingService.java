@@ -33,12 +33,16 @@ public class BookingService {
     }
 
     @Observed(name = "booking.cancel.booking", contextualName = "BookingService.cancelBookingById")
-    public void cancelBookingById(@Valid Long id) {
+    public void deleteById(@Valid Long id) {
         bookingRepository.deleteById(id);
     }
 
     public Optional<Booking> findById(Long id) {
         return bookingRepository.findById(id);
+    }
+
+    public boolean existsById(Long id) {
+        return bookingRepository.existsById(id);
     }
 
     public Stream<Booking> allBookings() {

@@ -9,10 +9,12 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.Optional;
 import java.util.stream.Stream;
 
 @RestController
@@ -23,7 +25,7 @@ public class BookingController {
     private final BookingService bookingService;
     private final BookingMapper bookingMapper;
 
-//    private Logger logger = LoggerFactory.getLogger(BookingController.class);
+    private final Logger logger = LoggerFactory.getLogger(BookingController.class);
 
     @PutMapping("/book")
     public BookingDTO bookDuration(@Valid @RequestBody BookingRequest bookingRequest) {
@@ -33,8 +35,13 @@ public class BookingController {
     }
 
     @DeleteMapping("/cancel/{id}")
-    public void cancelBookingById(@Valid @PathVariable("id") Long id) {
-        bookingService.cancelBookingById(id);
+    public ResponseEntity<Object> cancelBookingById(@Valid @PathVariable("id") Long id) {
+        logger.debug("Request - Delete Booking: {}", id);
+        if (!bookingService.existsById(id)) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        bookingService.deleteById(id);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
@@ -43,12 +50,17 @@ public class BookingController {
             @ApiResponse(responseCode = "200", description = "successfully retrieved"),
             @ApiResponse(responseCode = "400", description = "Bad request"),
             @ApiResponse(responseCode = "500", description = "Internal Server Error")})
-    public Optional<BookingDTO> camperById(@PathVariable("id") @Valid @NotNull Long id) {
-        return bookingService.findById(id).map(bookingMapper::toDto);
+    public ResponseEntity<BookingDTO> bookingById(@PathVariable("id") @Valid @NotNull Long id) {
+        logger.debug("Request - Booking with ID: {}", id);
+        return bookingService.findById(id)
+                .map(bookingMapper::toDto)
+                .map(bookingDto -> new ResponseEntity<>(bookingDto, HttpStatus.OK))
+                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     @GetMapping
     public Stream<BookingDTO> allBookings() {
+        logger.debug("Request - All Bookings");
         return bookingService.allBookings().map(bookingMapper::toDto);
     }
 }

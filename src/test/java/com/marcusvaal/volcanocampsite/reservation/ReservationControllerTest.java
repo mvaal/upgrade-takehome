@@ -39,13 +39,13 @@ public class ReservationControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isMap())
-                .andExpect(jsonPath("$.email", equalTo("marcus@upgrade.com")))
-                .andExpect(jsonPath("$.fullName", equalTo("Marcus")));
+                .andExpect(jsonPath("$.date", equalTo("2023-06-04")))
+                .andExpect(jsonPath("$.cost", equalTo(0d)));
     }
 
     @Test
     void should_return_not_found_if_it_does_not_exists() throws Exception {
-        this.mockMvc.perform(get("/api/v1/reservations/booking/0"))
+        this.mockMvc.perform(get("/api/v1/reservations/0"))
                 .andDo(print())
                 .andExpect(status().isNotFound());
     }
@@ -55,14 +55,13 @@ public class ReservationControllerTest {
         this.mockMvc.perform(get("/api/v1/reservations/booking/1"))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$").isMap())
-                .andExpect(jsonPath("$.email", equalTo("marcus@upgrade.com")))
-                .andExpect(jsonPath("$.fullName", equalTo("Marcus")));
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$", hasSize(3)));
     }
 
     @Test
     void should_return_not_found_if_it_does_not_exists_by_booking_id() throws Exception {
-        this.mockMvc.perform(get("/api/v1/reservations/0"))
+        this.mockMvc.perform(get("/api/v1/reservations/booking/0"))
                 .andDo(print())
                 .andExpect(status().isNotFound());
     }
