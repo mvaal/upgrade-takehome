@@ -23,6 +23,12 @@ import java.util.List;
 public class ControllerExceptionHandler {
     private final Logger logger = LoggerFactory.getLogger(ControllerExceptionHandler.class);
 
+    /**
+     * Handle error responses for spring validation exceptions
+     * @param ex Exception
+     * @param request request
+     * @return Error response
+     */
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(value = {MethodArgumentNotValidException.class})
     public ResponseEntity<ErrorResponse> methodArgumentNotValidException(MethodArgumentNotValidException ex, HttpServletRequest request) {
@@ -33,6 +39,12 @@ public class ControllerExceptionHandler {
         return new ResponseEntity<>(new ErrorResponse(HttpStatus.BAD_REQUEST, String.join("\n", fieldErrors), request.getServletPath()), HttpStatus.BAD_REQUEST);
     }
 
+    /**
+     * Handle error responses for jackson parsing exceptions
+     * @param ex Exception
+     * @param request request
+     * @return Error response
+     */
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(value = {HttpMessageNotReadableException.class})
     public ResponseEntity<ErrorResponse> httpMessageNotReadableException(HttpMessageNotReadableException ex, HttpServletRequest request) {
@@ -45,6 +57,13 @@ public class ControllerExceptionHandler {
         return handleAllExceptions(ex, request);
     }
 
+    /**
+     * Handle error responses for database integrity exceptions.
+     * This is how we are handling concurrency
+     * @param ex Exception
+     * @param request request
+     * @return Error response
+     */
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(DataIntegrityViolationException.class)
     public final ResponseEntity<ErrorResponse> dataIntegrityViolationException(DataIntegrityViolationException ex, HttpServletRequest request) {
@@ -57,11 +76,23 @@ public class ControllerExceptionHandler {
         return handleAllExceptions(ex, request);
     }
 
+    /**
+     * Handle incorrect Http Request Method usage
+     * @param ex Exception
+     * @param request request
+     * @return Error response
+     */
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     public final ResponseEntity<ErrorResponse> httpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException ex, HttpServletRequest request) {
         return new ResponseEntity<>(new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage(), request.getServletPath()), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+    /**
+     * Handle general uncaught exceptions, don't expose to user.
+     * @param ex Exception
+     * @param request request
+     * @return Error response
+     */
     @ExceptionHandler(Exception.class)
     public final ResponseEntity<ErrorResponse> handleAllExceptions(Exception ex, HttpServletRequest request) {
         logger.error("Unhandled Error Exception: {}", request, ex);

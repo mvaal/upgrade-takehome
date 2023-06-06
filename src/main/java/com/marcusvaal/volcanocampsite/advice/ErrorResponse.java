@@ -15,8 +15,14 @@ public class ErrorResponse {
     @JsonIgnore
     private final HttpStatus httpStatus;
 
+    /**
+     * Error message
+     */
     private final String message;
 
+    /**
+     * Servlet path that the exception took place
+     */
     private final String path;
 
     public int getStatus() {
