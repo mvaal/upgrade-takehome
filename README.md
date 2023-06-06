@@ -7,9 +7,15 @@ was decided to come up with an online web application to manage the reservations
 API service that will manage the campsite reservations.
 
 ## Design
+
 Design docs can be found [here](./design/Design.md).
 
 ## Running
+
+Running local requires the `local` spring profile. This is already set up for you if you decide to run with the below options.
+
+Different jpa source should be used to run in a more production like environment.
+
 ### IntelliJ
 #### Ephemeral 
 
@@ -17,7 +23,7 @@ Design docs can be found [here](./design/Design.md).
 
 #### Persistent
 
-> Run the [Campsite Reservation Service - Persistent](./.run/Campsite%20Reservation%20Service%20-%20Persistent.run.xmlm) configuration.
+> Run the [Campsite Reservation Service - Persistent](./.run/Campsite%20Reservation%20Service%20-%20Persistent.run.xml) configuration.
 
 ### Docker
 #### Ephemeral
@@ -44,15 +50,17 @@ Pre-populated sample queries can be found [here](booking-service.http).
 #### Connection Info
 ##### Ephemeral
 ```
-jdbc:h2:mem:mydb
-upgrade
-password
+Driver Class: org.h2.Driver
+JDBC URL: jdbc:h2:mem:mydb
+User Name: upgrade
+Password: password
 ```
 ##### Persistent
-```sql
-jdbc:h2:file:C:/Users/mjvaa/IdeaProjects/github/mvaal/upgrade-takehome/data/volcanocampsite
-upgrade
-password
+```
+Driver Class: org.h2.Driver
+JDBC URL: jdbc:h2:file:C:/Users/mjvaa/IdeaProjects/github/mvaal/upgrade-takehome/data/volcanocampsite
+User Name: upgrade
+Password: password
 ```
 ##### Sample Query
 ```sql
