@@ -52,6 +52,7 @@ public class BookingService {
         return bookingRepository.existsById(id);
     }
 
+    @Transactional
     public Stream<Booking> allBookings() {
         return bookingRepository.findAll().stream();
     }

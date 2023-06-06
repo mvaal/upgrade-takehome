@@ -1,6 +1,7 @@
 package com.marcusvaal.volcanocampsite.camper;
 
 import com.marcusvaal.volcanocampsite.reservation.Reservation;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +24,7 @@ public class CamperService {
         return camperRepository.findByEmail(email);
     }
 
+    @Transactional
     public Stream<Camper> allCampers() {
         return camperRepository.findAll().stream();
     }

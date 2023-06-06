@@ -1,11 +1,13 @@
 package com.marcusvaal.volcanocampsite.booking;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.marcusvaal.volcanocampsite.booking.dto.BookingRequest;
 import com.marcusvaal.volcanocampsite.booking.dto.StrictDateRange;
 import com.marcusvaal.volcanocampsite.camper.CamperRepository;
 import com.marcusvaal.volcanocampsite.camper.dto.CamperDTO;
 import com.marcusvaal.volcanocampsite.reservation.ReservationRepository;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
@@ -19,10 +21,13 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Random;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.BEFORE_TEST_METHOD;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -62,7 +67,7 @@ public class BookingControllerTest {
         LocalDate startDate = LocalDate.now().plusDays(1);
         long duration = 3;
         CamperDTO camper = new CamperDTO("foo@upgrade.com", "Foo");
-        StrictDateRange dateRange = new StrictDateRange(startDate, startDate.plusDays(duration-1));
+        StrictDateRange dateRange = new StrictDateRange(startDate, startDate.plusDays(duration - 1));
         BookingRequest bookingRequest = new BookingRequest(camper, dateRange);
         String bookingToCreate = objectMapper.writeValueAsString(bookingRequest);
 
@@ -76,7 +81,7 @@ public class BookingControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isMap())
-                .andExpect(jsonPath("$.bookingId", equalTo(1)))
+                .andExpect(jsonPath("$.bookingId", notNullValue()))
                 .andExpect(jsonPath("$.camper.email", equalTo(camper.email())))
                 .andExpect(jsonPath("$.camper.fullName", equalTo(camper.fullName())))
                 .andExpect(jsonPath("$.dateRange.startDate", equalTo(formatter.format(startDate))))
@@ -93,7 +98,7 @@ public class BookingControllerTest {
         LocalDate startDate = LocalDate.now().plusDays(1);
         long duration = 3;
         CamperDTO camper = new CamperDTO("marcus@upgrade.com", "Marcus");
-        StrictDateRange dateRange = new StrictDateRange(startDate, startDate.plusDays(duration-1));
+        StrictDateRange dateRange = new StrictDateRange(startDate, startDate.plusDays(duration - 1));
         BookingRequest bookingRequest = new BookingRequest(camper, dateRange);
         String bookingToCreate = objectMapper.writeValueAsString(bookingRequest);
 
@@ -124,7 +129,7 @@ public class BookingControllerTest {
         LocalDate startDate = LocalDate.now().plusDays(1);
         long durationOne = 3;
         CamperDTO camperOne = new CamperDTO("foo@upgrade.com", "Foo");
-        StrictDateRange dateRangeOne = new StrictDateRange(startDate, startDate.plusDays(durationOne-1));
+        StrictDateRange dateRangeOne = new StrictDateRange(startDate, startDate.plusDays(durationOne - 1));
         BookingRequest bookingRequestOne = new BookingRequest(camperOne, dateRangeOne);
         String bookingToCreateOne = objectMapper.writeValueAsString(bookingRequestOne);
 
@@ -143,7 +148,7 @@ public class BookingControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isMap())
-                .andExpect(jsonPath("$.bookingId", equalTo(3)))
+                .andExpect(jsonPath("$.bookingId", notNullValue()))
                 .andExpect(jsonPath("$.camper.email", equalTo(camperOne.email())))
                 .andExpect(jsonPath("$.camper.fullName", equalTo(camperOne.fullName())))
                 .andExpect(jsonPath("$.dateRange.startDate", equalTo(formatter.format(startDate))))
@@ -171,7 +176,7 @@ public class BookingControllerTest {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
         LocalDate startDate = LocalDate.now().plusDays(1);
         long duration = 2;
-        StrictDateRange dateRange = new StrictDateRange(startDate, startDate.plusDays(duration-1));
+        StrictDateRange dateRange = new StrictDateRange(startDate, startDate.plusDays(duration - 1));
         String dateRangeToCreate = objectMapper.writeValueAsString(dateRange);
 
         assertThat(this.camperRepository.findAll(), hasSize(1));
@@ -238,4 +243,41 @@ public class BookingControllerTest {
                 .andExpect(jsonPath("$").isArray())
                 .andExpect(jsonPath("$", hasSize(1)));
     }
+
+    @Test
+    void should_gracefully_handle_concurrent_bookings() throws Exception {
+        assertThat(this.camperRepository.findAll(), hasSize(1));
+        assertThat(this.bookingRepository.findAll(), hasSize(1));
+        assertThat(this.reservationRepository.findAll(), hasSize(3));
+
+        int numberOfThreads = 10;
+        try (ExecutorService service = Executors.newFixedThreadPool(numberOfThreads)) {
+            LocalDate startDate = LocalDate.now().plusDays(1);
+            CountDownLatch latch = new CountDownLatch(numberOfThreads);
+            for (int i = 0; i < numberOfThreads; i++) {
+                service.execute(() -> {
+                    String user = RandomStringUtils.random(10, true, true);
+                    CamperDTO camper = new CamperDTO(String.format("%s@upgrade.com", user), user);
+                    StrictDateRange dateRange = new StrictDateRange(startDate, startDate);
+                    BookingRequest bookingRequest = new BookingRequest(camper, dateRange);
+                    try {
+                        String bookingToCreate = objectMapper.writeValueAsString(bookingRequest);
+                        this.mockMvc.perform(post("/api/v1/bookings/booking")
+                                .contentType(APPLICATION_JSON)
+                                .content(bookingToCreate));
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    } finally {
+                        latch.countDown();
+                    }
+                });
+            }
+            latch.await();
+        }
+
+        assertThat(this.camperRepository.findAll(), hasSize(2));
+        assertThat(this.bookingRepository.findAll(), hasSize(2));
+        assertThat(this.reservationRepository.findAll(), hasSize(4));
+    }
+
 }

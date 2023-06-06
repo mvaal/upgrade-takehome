@@ -18,6 +18,7 @@ public class ReservationService {
         return reservationRepository.findById(id);
     }
 
+    @Transactional
     public Stream<Reservation> allReservations() {
         return reservationRepository.findAll().stream();
     }
