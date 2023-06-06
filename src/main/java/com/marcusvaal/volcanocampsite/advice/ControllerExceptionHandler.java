@@ -1,7 +1,6 @@
 package com.marcusvaal.volcanocampsite.advice;
 
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
-import com.marcusvaal.volcanocampsite.booking.BookingController;
 import org.hibernate.exception.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,17 +11,19 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 
 import java.time.format.DateTimeParseException;
 import java.util.List;
 
-@ControllerAdvice
+@RestControllerAdvice
 public class ControllerExceptionHandler {
     private final Logger logger = LoggerFactory.getLogger(ControllerExceptionHandler.class);
 
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(value = {MethodArgumentNotValidException.class})
     public ResponseEntity<ErrorResponse> methodArgumentNotValidException(MethodArgumentNotValidException ex, WebRequest request) {
         BindingResult result = ex.getBindingResult();
@@ -32,6 +33,7 @@ public class ControllerExceptionHandler {
         return new ResponseEntity<>(new ErrorResponse(String.join("\n", fieldErrors)), HttpStatus.BAD_REQUEST);
     }
 
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(value = {HttpMessageNotReadableException.class})
     public ResponseEntity<ErrorResponse> httpMessageNotReadableException(HttpMessageNotReadableException ex, WebRequest request) {
         if (ex.getCause() instanceof InvalidFormatException) {
@@ -43,6 +45,7 @@ public class ControllerExceptionHandler {
         return handleAllExceptions(ex, request);
     }
 
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(DataIntegrityViolationException.class)
     public final ResponseEntity<ErrorResponse> dataIntegrityViolationException(DataIntegrityViolationException ex, WebRequest request) {
         if (ex.getCause() instanceof ConstraintViolationException) {

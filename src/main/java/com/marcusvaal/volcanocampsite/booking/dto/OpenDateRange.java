@@ -27,7 +27,7 @@ public record OpenDateRange(
                 .orElse(this.startDate.plusMonths(1));
     }
 
-    @JsonProperty
+    @JsonIgnore
     public Long getDurationDays() {
         return ChronoUnit.DAYS.between(this.startDate, endDate()) + 1;
     }

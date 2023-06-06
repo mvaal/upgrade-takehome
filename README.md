@@ -6,25 +6,57 @@ The island is big enough to host a single campsite so everybody is very excited 
 was decided to come up with an online web application to manage the reservations. You are responsible for design and development of a REST
 API service that will manage the campsite reservations.
 
-To streamline the reservations a few constraints need to be in place -
-* The campsite will be free for all.
-* The campsite can be reserved for max 3 days.
-* The campsite can be reserved minimum 1 day(s) ahead of arrival and up to 1 month in advance.
-* Reservations can be cancelled anytime.
-* For sake of simplicity assume the check-in & check-out time is 12:00 AM
+## Design
+Design docs can be found [here](./design/Design.md).
 
+## Running
+### IntelliJ
+#### Ephemeral 
 
+> Run the [Campsite Reservation Service](./.run/Campsite%20Reservation%20Service.run.xml) configuration.
 
-http://localhost:8080/swagger-ui.html
-http://localhost:8080/actuator/prometheus
-http://localhost:8080/h2-console
+#### Persistent
+
+> Run the [Campsite Reservation Service - Persistent](./.run/Campsite%20Reservation%20Service%20-%20Persistent.run.xmlm) configuration.
+
+### Docker
+#### Ephemeral
+
+    make docker
+
+#### Persistent
+
+    make docker-persistent
+
+## Usage
+### Swagger
+
+> http://localhost:8080/swagger-ui.html
+
+### booking-service.http
+
+Pre-populated sample queries can be found [here](booking-service.http).
+
+### H2 Console
+
+> http://localhost:8080/h2-console
+
+#### Connection Info
+##### Ephemeral
 ```
 jdbc:h2:mem:mydb
 upgrade
 password
 ```
+##### Persistent
 ```sql
-select EMAIL, FULL_NAME, DATE, COST from CAMPER c, BOOKING b, RESERVATION r where c.ID = b.CAMPER_ID and b.ID = r.BOOKING_ID
+jdbc:h2:file:C:/Users/mjvaa/IdeaProjects/github/mvaal/upgrade-takehome/data/volcanocampsite
+upgrade
+password
+```
+##### Sample Query
+```sql
+select EMAIL, FULL_NAME, STAY_DATE, COST from CAMPER c, BOOKING b, RESERVATION r where c.ID = b.CAMPER_ID and b.ID = r.BOOKING_ID
 ```
 
 # References

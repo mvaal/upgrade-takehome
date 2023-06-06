@@ -1,10 +1,10 @@
 ###
-POST http://localhost:8080/api/v1/bookings/book
+POST http://localhost:8080/api/v1/bookings/booking
 Content-Type: application/json
 
 {
   "camper": {
-    "email": "marsafcus@upgrade.com",
+    "email": "marcus@upgrade.com",
     "fullName": "Marcus"
   },
   "dateRange": {
@@ -20,7 +20,7 @@ GET http://localhost:8080/api/v1/bookings
 GET http://localhost:8080/api/v1/bookings/1
 
 ###
-PUT http://localhost:8080/api/v1/bookings/book/1
+PUT http://localhost:8080/api/v1/bookings/booking/1
 Content-Type: application/json
 
 {

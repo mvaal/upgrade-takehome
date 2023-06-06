@@ -30,7 +30,7 @@ public record StrictDateRange(
         LocalDate endDate
 ) {
 
-    @JsonProperty
+    @JsonIgnore
     public Long getDurationDays() {
         return ChronoUnit.DAYS.between(this.startDate, endDate) + 1;
     }

@@ -1,0 +1,11 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Campsite Reservation Service - Persistent" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+    <option name="ACTIVE_PROFILES" value="local,h2persistent,debug" />
+    <module name="volcano-booking-service" />
+    <option name="SPRING_BOOT_MAIN_CLASS" value="com.marcusvaal.volcanocampsite.VolcanoCampsiteApplication" />
+    <option name="VM_PARAMETERS" value="-Dspring.datasource.url=&quot;jdbc:h2:file:$PROJECT_DIR$/data/volcanocampsite&quot;" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

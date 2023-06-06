@@ -1,6 +1,7 @@
 package com.marcusvaal.volcanocampsite.camper;
 
 import com.marcusvaal.volcanocampsite.camper.dto.CamperDTO;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -22,11 +23,11 @@ import java.util.stream.Stream;
 @RequiredArgsConstructor
 public class CamperController {
     private final Logger logger = LoggerFactory.getLogger(CamperController.class);
-
     private final CamperService camperService;
     private final CamperMapper camperMapper;
 
     @GetMapping("/camper/{id}")
+    @Operation(summary = "Get Camper By Camper ID", description = "Get Camper by Camper ID - Utility")
     public ResponseEntity<CamperDTO> camperById(@PathVariable("id") @Valid @NotNull Long id) {
         logger.debug("Request - Camper with ID: {}", id);
         return camperService.findById(id)
@@ -36,6 +37,7 @@ public class CamperController {
     }
 
     @GetMapping
+    @Operation(summary = "Get all campers", description = "Get all Campers - Utility")
     public Stream<CamperDTO> allCampers() {
         logger.debug("Request - All Campers");
         return camperService.allCampers().map(camperMapper::toDto);

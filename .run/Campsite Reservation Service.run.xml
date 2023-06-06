@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="VolcanoCampsiteApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+  <configuration default="false" name="Campsite Reservation Service" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
     <option name="ACTIVE_PROFILES" value="local,debug" />
     <module name="volcano-booking-service" />
     <option name="SPRING_BOOT_MAIN_CLASS" value="com.marcusvaal.volcanocampsite.VolcanoCampsiteApplication" />

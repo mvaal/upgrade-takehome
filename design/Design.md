@@ -8,7 +8,7 @@
 
 ### Assumptions
 * No timezones
-* Rules for reservation do not apply to end date (to simplify things)
+* Cost was included in the model, but is always set as 0
 
 ## System Requirements
 * The users will need to find out when the campsite is available. So the system should expose an API to provide information of the
@@ -23,5 +23,18 @@
 * In general, the system should be able to handle large volume of requests for getting the campsite availability
 * There are no restrictions on how reservations are stored as long as system constraints are not violated.
 
+### Assumptions
+* Users can book multiple times
+
 ## Database
 ![Class Diagram](./ClassDiagram.drawio.svg "Class Diagram")
+
+## Design Decisions
+### High Scalability
+To support high scalability, the application should scale horizontally and not just vertically.
+This also means that concurrency issues should be solved outside the JVM instead of locks in the code.
+Concurrency will be handled by the database using transactions and unique keys.
+
+Uniqueness will be enforced by
+* Reservation Date - Must be unique
+* Camper email - Must be unique

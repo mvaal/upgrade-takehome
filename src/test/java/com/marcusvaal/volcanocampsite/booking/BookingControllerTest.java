@@ -80,8 +80,7 @@ public class BookingControllerTest {
                 .andExpect(jsonPath("$.camper.email", equalTo(camper.email())))
                 .andExpect(jsonPath("$.camper.fullName", equalTo(camper.fullName())))
                 .andExpect(jsonPath("$.dateRange.startDate", equalTo(formatter.format(startDate))))
-                .andExpect(jsonPath("$.dateRange.endDate", equalTo(formatter.format(dateRange.endDate()))))
-                .andExpect(jsonPath("$.dateRange.durationDays", equalTo((int)duration)));
+                .andExpect(jsonPath("$.dateRange.endDate", equalTo(formatter.format(dateRange.endDate()))));
 
         assertThat(this.camperRepository.findAll(), hasSize(2));
         assertThat(this.bookingRepository.findAll(), hasSize(2));
@@ -112,8 +111,7 @@ public class BookingControllerTest {
                 .andExpect(jsonPath("$.camper.email", equalTo(camper.email())))
                 .andExpect(jsonPath("$.camper.fullName", equalTo(camper.fullName())))
                 .andExpect(jsonPath("$.dateRange.startDate", equalTo(formatter.format(startDate))))
-                .andExpect(jsonPath("$.dateRange.endDate", equalTo(formatter.format(dateRange.endDate()))))
-                .andExpect(jsonPath("$.dateRange.durationDays", equalTo((int)duration)));
+                .andExpect(jsonPath("$.dateRange.endDate", equalTo(formatter.format(dateRange.endDate()))));
 
         assertThat(this.camperRepository.findAll(), hasSize(1));
         assertThat(this.bookingRepository.findAll(), hasSize(2));
@@ -149,8 +147,7 @@ public class BookingControllerTest {
                 .andExpect(jsonPath("$.camper.email", equalTo(camperOne.email())))
                 .andExpect(jsonPath("$.camper.fullName", equalTo(camperOne.fullName())))
                 .andExpect(jsonPath("$.dateRange.startDate", equalTo(formatter.format(startDate))))
-                .andExpect(jsonPath("$.dateRange.endDate", equalTo(formatter.format(dateRangeOne.endDate()))))
-                .andExpect(jsonPath("$.dateRange.durationDays", equalTo((int)durationOne)));
+                .andExpect(jsonPath("$.dateRange.endDate", equalTo(formatter.format(dateRangeOne.endDate()))));
 
         assertThat(this.camperRepository.findAll(), hasSize(2));
         assertThat(this.bookingRepository.findAll(), hasSize(2));
@@ -191,8 +188,7 @@ public class BookingControllerTest {
                 .andExpect(jsonPath("$.camper.email", equalTo("marcus@upgrade.com")))
                 .andExpect(jsonPath("$.camper.fullName", equalTo("Marcus")))
                 .andExpect(jsonPath("$.dateRange.startDate", equalTo(formatter.format(startDate))))
-                .andExpect(jsonPath("$.dateRange.endDate", equalTo(formatter.format(dateRange.endDate()))))
-                .andExpect(jsonPath("$.dateRange.durationDays", equalTo((int)duration)));
+                .andExpect(jsonPath("$.dateRange.endDate", equalTo(formatter.format(dateRange.endDate()))));
 
         assertThat(this.camperRepository.findAll(), hasSize(1));
         assertThat(this.bookingRepository.findAll(), hasSize(1));
@@ -224,8 +220,7 @@ public class BookingControllerTest {
                 .andExpect(jsonPath("$.camper.email", equalTo("marcus@upgrade.com")))
                 .andExpect(jsonPath("$.camper.fullName", equalTo("Marcus")))
                 .andExpect(jsonPath("$.dateRange.startDate", equalTo("06/01/2023")))
-                .andExpect(jsonPath("$.dateRange.endDate", equalTo("06/03/2023")))
-                .andExpect(jsonPath("$.dateRange.durationDays", equalTo(3)));
+                .andExpect(jsonPath("$.dateRange.endDate", equalTo("06/03/2023")));
     }
 
     @Test
