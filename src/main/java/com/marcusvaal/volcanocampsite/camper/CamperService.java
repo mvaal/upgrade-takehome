@@ -20,10 +20,6 @@ public class CamperService {
         return camperRepository.findById(id);
     }
 
-    public Optional<Camper> findByEmail(String email){
-        return camperRepository.findByEmail(email);
-    }
-
     @Transactional
     public Stream<Camper> allCampers() {
         return camperRepository.findAll().stream();

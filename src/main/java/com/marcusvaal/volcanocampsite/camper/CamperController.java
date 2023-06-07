@@ -26,6 +26,11 @@ public class CamperController {
     private final CamperService camperService;
     private final CamperMapper camperMapper;
 
+    /**
+     * Get camper by ID
+     * @param id Camper ID
+     * @return Camper DTO
+     */
     @GetMapping("/camper/{id}")
     @Operation(summary = "Get Camper By Camper ID", description = "Get Camper by Camper ID - Utility")
     public ResponseEntity<CamperDTO> camperById(@PathVariable("id") @Valid @NotNull Long id) {
@@ -36,6 +41,10 @@ public class CamperController {
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
+    /**
+     * Get all Campers
+     * @return All Campers
+     */
     @GetMapping
     @Operation(summary = "Get all campers", description = "Get all Campers - Utility")
     public Stream<CamperDTO> allCampers() {

@@ -20,6 +20,11 @@ import java.util.stream.Collectors;
 class BookingMapper {
     private final CamperMapper camperMapper;
 
+    /**
+     * Convert Booking to Booking DTO
+     * @param booking Booking
+     * @return Booking DTO
+     */
     public BookingDTO toDto(Booking booking) {
         CamperDTO camper = camperMapper.toDto(booking.getCamper());
         Set<Reservation> reservations = booking.getReservations();
@@ -29,6 +34,11 @@ class BookingMapper {
         return new BookingDTO(booking.getId(), camper, new StrictDateRange(Collections.min(reservations).getDate(), Collections.max(reservations).getDate()));
     }
 
+    /**
+     * Convert Booking Request DTO to Booking
+     * @param bookingRequest Booking Request
+     * @return Booking
+     */
     public Booking toBooking(BookingRequest bookingRequest) {
         Camper camper = camperMapper.toCamper(bookingRequest.camper());
         Booking booking = Booking.builder().camper(camper).build();

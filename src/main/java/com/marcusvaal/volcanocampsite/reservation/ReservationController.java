@@ -25,6 +25,11 @@ public class ReservationController {
     private final BookingService bookingService;
     private final ReservationMapper reservationMapper;
 
+    /**
+     * Get Reservation by ID
+     * @param id Reservation ID
+     * @return Reservation DTO
+     */
     @GetMapping("/reservation/{id}")
     @Operation(summary = "Get Reservation By Reservation ID", description = "Get Reservation by Reservation ID - Utility")
     public ResponseEntity<ReservationDTO> reservationById(@Valid @PathVariable("id") Long id) {
@@ -35,6 +40,11 @@ public class ReservationController {
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
+    /**
+     * Get Reservation by Booking ID
+     * @param id Booking ID
+     * @return Stream of Reservation DTOs
+     */
     @GetMapping("/booking/{id}")
     @Operation(summary = "Get Reservation By Booking ID", description = "Get Reservation by Booking ID")
     public ResponseEntity<Stream<ReservationDTO>> reservationsByBookingId(@Valid @PathVariable("id") Long id) {
@@ -47,6 +57,11 @@ public class ReservationController {
         return new ResponseEntity<>(stream, HttpStatus.OK);
     }
 
+    /**
+     * Get all available Reservations
+     * @param dateRange Date range
+     * @return Stream of Reservation DTOs
+     */
     @PostMapping("/available")
     @Operation(summary = "Get Reservations Available by Date Range", description = "Get Reservations available by Date Range or month span")
     public Stream<ReservationDTO> availableReservations(@Valid @RequestBody OpenDateRange dateRange) {
@@ -55,6 +70,10 @@ public class ReservationController {
                 .map(reservationMapper::toDto);
     }
 
+    /**
+     * Get all Reservations
+     * @return Stream of Reservation DTOs
+     */
     @GetMapping
     @Operation(summary = "Get all Reservations", description = "Get all Reservations - Utility")
     public Stream<ReservationDTO> allReservations() {

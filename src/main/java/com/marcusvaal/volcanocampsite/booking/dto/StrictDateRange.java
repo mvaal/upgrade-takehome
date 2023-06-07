@@ -14,6 +14,11 @@ import java.time.temporal.ChronoUnit;
 import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
+/**
+ * Date range for booking request
+ * @param startDate Start date
+ * @param endDate End date
+ */
 public record StrictDateRange(
         @JsonFormat(pattern = "MM/dd/yyyy")
         @NotNull
@@ -30,6 +35,10 @@ public record StrictDateRange(
         LocalDate endDate
 ) {
 
+    /**
+     * Duration in days
+     * @return duration in days
+     */
     @JsonIgnore
     public Long getDurationDays() {
         return ChronoUnit.DAYS.between(this.startDate, endDate) + 1;
@@ -41,12 +50,22 @@ public record StrictDateRange(
                 .mapToObj(this.startDate::plusDays);
     }
 
+    /**
+     * Date Range validation for to compare start and end dates
+     * null check is required here as it can be set to null during validation
+     *
+     * @return true if start date is before or equal to end date
+     */
     @AssertTrue(message = "startDate must be the same or before endDate")
     @JsonIgnore
     public boolean isStartDateBeforeEndDate() {
         return startDate != null && endDate != null && !endDate.isBefore(startDate);
     }
 
+    /**
+     * Check if the dates duration is correct
+     * @return true if duration is between 1 and 3
+     */
     @AssertTrue(message = "The campsite can be reserved for min 1 day and max 3 days")
     @JsonIgnore
     public boolean isCorrectDuration() {

@@ -25,6 +25,12 @@ public class BookingService {
     private final ReservationRepository reservationRepository;
 
 
+    /**
+     * Makes a booking
+     * Transactional will roll back creation of all Records if there is a conflict
+     * @param booking Booking
+     * @return Booking
+     */
     @Observed(name = "booking.book.duration.days", contextualName = "BookingService.bookDuration")
     @Transactional
     public Booking bookDuration(Booking booking) {
@@ -52,11 +58,23 @@ public class BookingService {
         return bookingRepository.existsById(id);
     }
 
+    /**
+     * All Bookings
+     * All Streams should be Transactional
+     * @return Stream of Bookings
+     */
     @Transactional
     public Stream<Booking> allBookings() {
         return bookingRepository.findAll().stream();
     }
 
+    /**
+     * Update a duration
+     * Concurrent changes are handled by the database unique keys
+     * @param id Booking ID
+     * @param dateRange Date Range
+     * @return Booking if it exists, empty optional if not
+     */
     @Transactional
     public Optional<Booking> updateDuration(Long id, final StrictDateRange dateRange) {
         return bookingRepository.findById(id)

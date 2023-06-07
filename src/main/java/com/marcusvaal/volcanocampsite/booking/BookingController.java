@@ -16,6 +16,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.stream.Stream;
 
+/**
+ * Booking Controller
+ */
 @RestController
 @RequestMapping("/api/v1/bookings")
 @Tag(name = "Booking", description = "Campsite Bookings")
@@ -25,6 +28,11 @@ public class BookingController {
     private final BookingService bookingService;
     private final BookingMapper bookingMapper;
 
+    /**
+     * Makes a booking
+     * @param bookingRequest booking request
+     * @return booking DTO
+     */
     @PostMapping("/booking")
     @Operation(summary = "Book a reservation", description = "Book a reservation for the campsite")
     public BookingDTO book(@Valid @RequestBody BookingRequest bookingRequest) {
@@ -34,6 +42,12 @@ public class BookingController {
         return bookingMapper.toDto(response);
     }
 
+    /**
+     * Update a booking
+     * @param id Booking id
+     * @param dateRange date range
+     * @return Booking DTO
+     */
     @PutMapping("/booking/{id}")
     @Operation(summary = "Update a reservation", description = "Update a reservation based on Booking ID")
     public ResponseEntity<BookingDTO> updateDuration(@NotNull @PathVariable("id") Long id, @RequestBody @Valid StrictDateRange dateRange) {
@@ -44,6 +58,11 @@ public class BookingController {
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
+    /**
+     * Deletes a booking
+     * @param id booking id
+     * @return ok if found, not found if not
+     */
     @DeleteMapping("/booking/{id}")
     @Operation(summary = "Cancel a reservation", description = "Cancel a reservation based on Booking ID")
     public ResponseEntity<Object> cancelBookingById(@Valid @PathVariable("id") Long id) {
@@ -55,6 +74,11 @@ public class BookingController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    /**
+     * Get booking by booking ID
+     * @param id Booking ID
+     * @return Booking ID
+     */
     @GetMapping("/booking/{id}")
     @Operation(summary = "Get Booking By Booking ID", description = "Get booking by Booking ID")
     public ResponseEntity<BookingDTO> bookingById(@PathVariable("id") @Valid @NotNull Long id) {
@@ -65,6 +89,10 @@ public class BookingController {
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
+    /**
+     * Get all bookings
+     * @return Stream of Bookings
+     */
     @GetMapping
     @Operation(summary = "Get all Bookings", description = "Get all Bookings - Utility")
     public Stream<BookingDTO> allBookings() {

@@ -10,6 +10,11 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @OpenAPIDefinition(info=@Info(title="Volcano Campsite"))
 public class VolcanoCampsiteApplicationConfig {
+    /**
+     * Enable Observed Aspect
+     * @param observationRegistry Observation Registry
+     * @return ObservedAspect
+     */
     @Bean
     ObservedAspect observedAspect(ObservationRegistry observationRegistry) {
         return new ObservedAspect(observationRegistry);

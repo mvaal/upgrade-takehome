@@ -33,6 +33,10 @@ public record OpenDateRange(
                 .orElse(this.startDate.plusMonths(1));
     }
 
+    /**
+     * Duration in days including start and end date
+     * @return duration in days
+     */
     @JsonIgnore
     public Long getDurationDays() {
         return ChronoUnit.DAYS.between(this.startDate, endDate()) + 1;
