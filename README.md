@@ -58,7 +58,7 @@ Password: password
 ##### Persistent
 ```
 Driver Class: org.h2.Driver
-JDBC URL: jdbc:h2:file:<working directory>/upgrade-takehome/data/volcanocampsite
+JDBC URL: jdbc:h2:file:<working directory>/data/volcanocampsite
 User Name: upgrade
 Password: password
 ```
